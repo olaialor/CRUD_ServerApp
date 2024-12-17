@@ -6,17 +6,21 @@
 package eus.tartanga.crud.entities;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.Date;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -30,7 +34,11 @@ public class Product implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer productId;
+    
+    @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "product")
+    private List<Cart> client;
+    
     @NotNull
     private String tittle;
     @NotNull
@@ -47,12 +55,21 @@ public class Product implements Serializable {
     private int stock;
     private byte[] image;
 
-    public Integer getId() {
-        return id;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    @XmlTransient
+    public List<Cart> getClient() {
+        return client;
+    }
+
+    public void setClient(List<Cart> client) {
+        this.client = client;
     }
 
     public String getTittle() {
@@ -114,18 +131,18 @@ public class Product implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (productId != null ? productId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        // TODO: Warning - this method won't work in the case the productId fields are not set
         if (!(object instanceof Product)) {
             return false;
         }
         Product other = (Product) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.productId == null && other.productId != null) || (this.productId != null && !this.productId.equals(other.productId))) {
             return false;
         }
         return true;
@@ -133,7 +150,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "eus.tartanga.crud.entities.Product[ id=" + id + " ]";
+        return "eus.tartanga.crud.entities.Product[ id=" + productId + " ]";
     }
-    
+
 }
