@@ -5,33 +5,29 @@
  */
 package eus.tartanga.crud.services;
 
-import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- *
- * @author 2dam
- */
-@javax.ws.rs.ApplicationPath("webresources")
+@ApplicationPath("/api") // Define el prefijo de la URL base para todos los recursos
 public class ApplicationConfig extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> resources = new java.util.HashSet<>();
+        Set<Class<?>> resources = new HashSet<>();
+        // Registrar los recursos aquí
         addRestResourceClasses(resources);
         return resources;
     }
 
     /**
-     * Do not modify addRestResourceClasses() method.
-     * It is automatically populated with
-     * all resources defined in the project.
-     * If required, comment out calling this method in getClasses().
+     * Registra todas las clases de recursos RESTful.
+     * Este método es útil para mantener un registro centralizado de recursos.
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(eus.tartanga.crud.services.ArtistFacadeREST.class);
         resources.add(eus.tartanga.crud.services.ConcertFacadeREST.class);
         resources.add(eus.tartanga.crud.services.ProductFacadeREST.class);
-    }
-    
+    }  
 }
