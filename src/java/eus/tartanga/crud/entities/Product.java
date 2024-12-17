@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -40,7 +41,7 @@ public class Product implements Serializable {
     private List<Cart> client;
     
     @NotNull
-    private String tittle;
+    private String title;
     @NotNull
     private String description;
     @NotNull
@@ -72,12 +73,12 @@ public class Product implements Serializable {
         this.client = client;
     }
 
-    public String getTittle() {
-        return tittle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTittle(String tittle) {
-        this.tittle = tittle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

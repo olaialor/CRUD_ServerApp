@@ -26,11 +26,11 @@ public class ApplicationConfig extends Application {
      * Este método es útil para mantener un registro centralizado de recursos.
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(eus.tartanga.crud.services.AdministratorFacadeREST.class); // Recurso de ejemplo
-        resources.add(eus.tartanga.crud.services.CartFacadeREST.class);
-        resources.add(eus.tartanga.crud.services.FanetixClientFacadeREST.class);
+        resources.add(eus.tartanga.crud.services.AdministratorFacadeREST.class);
         resources.add(eus.tartanga.crud.services.ArtistFacadeREST.class);
+        resources.add(eus.tartanga.crud.services.CartFacadeREST.class);
         resources.add(eus.tartanga.crud.services.ConcertFacadeREST.class);
+        resources.add(eus.tartanga.crud.services.FanetixClientFacadeREST.class);
         resources.add(eus.tartanga.crud.services.ProductFacadeREST.class);
     }  
 }
