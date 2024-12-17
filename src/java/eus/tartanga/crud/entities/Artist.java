@@ -53,7 +53,7 @@ public class Artist implements Serializable {
     private String name;
 
     private String lastAlbum;
-
+  
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "artist_concert", schema = "Fanetix",
             joinColumns = @JoinColumn(name = "artist_artistId", referencedColumnName = "artistId"),
