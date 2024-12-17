@@ -5,7 +5,6 @@
  */
 package eus.tartanga.crud.services;
 
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
@@ -30,5 +29,8 @@ public class ApplicationConfig extends Application {
         resources.add(eus.tartanga.crud.services.AdministratorFacadeREST.class); // Recurso de ejemplo
         resources.add(eus.tartanga.crud.services.CartFacadeREST.class);
         resources.add(eus.tartanga.crud.services.FanetixClientFacadeREST.class);
-    }
+        resources.add(eus.tartanga.crud.services.ArtistFacadeREST.class);
+        resources.add(eus.tartanga.crud.services.ConcertFacadeREST.class);
+        resources.add(eus.tartanga.crud.services.ProductFacadeREST.class);
+    }  
 }

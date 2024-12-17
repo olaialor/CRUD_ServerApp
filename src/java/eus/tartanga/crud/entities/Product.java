@@ -17,13 +17,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.Date;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 /**
  *
- * @author 2dam
+ * @author Elbire
  */
 @Entity
-@Table(name = "Product", schema = "Fanetix")
+@Table(name="Product", schema="Fanetix")
 @XmlRootElement
 public class Product implements Serializable {
 
@@ -31,8 +35,25 @@ public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer productId;
+    
     @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "product")
     private List<Cart> client;
+    
+    @NotNull
+    private String tittle;
+    @NotNull
+    private String description;
+    @NotNull
+    @ManyToOne
+    private Artist artist;
+    @NotNull
+    @Temporal (TemporalType.DATE)
+    private Date releaseDate;
+    @NotNull
+    private float price;
+    @NotNull
+    private int stock;
+    private byte[] image;
 
     public Integer getProductId() {
         return productId;
@@ -49,6 +70,62 @@ public class Product implements Serializable {
 
     public void setClient(List<Cart> client) {
         this.client = client;
+    }
+
+    public String getTittle() {
+        return tittle;
+    }
+
+    public void setTittle(String tittle) {
+        this.tittle = tittle;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Artist getArtist() {
+        return artist;
+    }
+
+    public void setArtist(Artist artist) {
+        this.artist = artist;
+    }
+
+    public Date getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     @Override
