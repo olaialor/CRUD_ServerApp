@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -53,7 +54,7 @@ public class Artist implements Serializable {
     private String name;
 
     private String lastAlbum;
-  
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "artist_concert", schema = "Fanetix",
             joinColumns = @JoinColumn(name = "artist_artistId", referencedColumnName = "artistId"),
@@ -139,6 +140,7 @@ public class Artist implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
+
         if (!(object instanceof Artist)) {
             return false;
         }

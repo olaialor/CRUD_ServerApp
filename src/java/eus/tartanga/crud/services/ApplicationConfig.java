@@ -29,5 +29,5 @@ public class ApplicationConfig extends Application {
         resources.add(eus.tartanga.crud.services.ArtistFacadeREST.class);
         resources.add(eus.tartanga.crud.services.ConcertFacadeREST.class);
         resources.add(eus.tartanga.crud.services.ProductFacadeREST.class);
-    }
+    }  
 }

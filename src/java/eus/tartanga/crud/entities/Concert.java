@@ -142,5 +142,4 @@ public class Concert implements Serializable {
     public String toString() {
         return "eus.tartanga.crud.entities.Concert[ id=" + concertId + " ]";
     }
-    
 }
