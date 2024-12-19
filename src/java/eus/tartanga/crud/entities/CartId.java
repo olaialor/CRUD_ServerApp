@@ -19,7 +19,7 @@ public class CartId implements Serializable {
     private String email;
 
     public CartId() {
-
+       
     }
 
     public CartId(Integer productId, String email) {

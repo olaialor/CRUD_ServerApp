@@ -11,6 +11,7 @@ import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +35,7 @@ public class FanetixClient extends FanetixUser{
     private Integer zip;
     private String city;
     private Integer mobile;
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "client")
+    @OneToMany( cascade = ALL, mappedBy = "client")
     private List<Cart> products;
 
     public String getFullName() {

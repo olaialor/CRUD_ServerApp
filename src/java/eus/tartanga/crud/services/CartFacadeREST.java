@@ -57,6 +57,7 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
     public CartFacadeREST() {
         super(Cart.class);
     }
+    //Crear
 
     @POST
     @Override
@@ -64,6 +65,7 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
     public void create(Cart entity) {
         super.create(entity);
     }
+    //Update
 
     @PUT
     @Path("{id}")
@@ -73,18 +75,18 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
     }
 
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") PathSegment id) {
-        eus.tartanga.crud.entities.CartId key = getPrimaryKey(id);
-        super.remove(super.find(key));
+    @Path("{email}/{productId}")
+    public void remove(@PathParam("email") String email,@PathParam("productId") Integer id) {
+       CartId idCart=new CartId(id,email);
+       super.remove(super.find(idCart));
     }
 
     @GET
-    @Path("{id}")
+    @Path("{email}/{productId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Cart find(@PathParam("id") PathSegment id) {
-        eus.tartanga.crud.entities.CartId key = getPrimaryKey(id);
-        return super.find(key);
+    public Cart find(@PathParam("email") String email,@PathParam("productId") Integer id) {
+        CartId idCart=new CartId(id,email);
+        return super.find(idCart);
     }
 
     @GET
@@ -94,13 +96,7 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
         return super.findAll();
     }
 
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Cart> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
+   
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
@@ -112,5 +108,5 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
