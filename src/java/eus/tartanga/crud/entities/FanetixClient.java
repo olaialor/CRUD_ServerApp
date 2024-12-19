@@ -7,6 +7,7 @@ package eus.tartanga.crud.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author 2dam
+ * @author Meylin
  */
 @Entity
 @Table(name = "Fanetix_client", schema = "Fanetix")
@@ -33,7 +34,7 @@ public class FanetixClient extends FanetixUser{
     private Integer zip;
     private String city;
     private Integer mobile;
-    @OneToMany(cascade = ALL, mappedBy = "client")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "client")
     private List<Cart> products;
 
     public String getFullName() {

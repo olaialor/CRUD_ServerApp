@@ -7,14 +7,18 @@ package eus.tartanga.crud.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author 2dam
+ * @author Meylin
  */
 @Entity
 @Table(name = "administrator", schema = "Fanetix")
@@ -22,13 +26,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Administrator extends FanetixUser {
     
     private static final long serialVersionUID = 1L;
-    private LocalDate incorporationDate;
+    @NotNull
+    @Temporal(TemporalType.DATE)
+    private Date incorporationDate;
 
-    public LocalDate getIncorporationDate() {
+    public Date getIncorporationDate() {
         return incorporationDate;
     }
 
-    public void setIncorporationDate(LocalDate incorporationDate) {
+    public void setIncorporationDate(Date incorporationDate) {
         this.incorporationDate = incorporationDate;
     }
 }

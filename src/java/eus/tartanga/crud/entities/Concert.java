@@ -23,34 +23,35 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author 2dam
+ * @author Irati
  */
 @Entity
-@Table (name="concert", schema="Fanetix")
+@Table(name = "concert", schema = "Fanetix")
 @XmlRootElement
 public class Concert implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer concertId;
-    
+
     private byte[] billboard;
-    
-    @NotNull (message="concertName.required")
+
+    @NotNull(message = "concertName.required")
     private String concertName;
-    
+
     @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
     private List<Artist> artistsList;
-    
+
     private String location;
-    
+
     private String city;
-    
-    @Temporal (TemporalType.DATE)
+
+    @Temporal(TemporalType.DATE)
     private Date concertDate;
-    @Temporal (TemporalType.TIME)
+
+    @Temporal(TemporalType.TIME)
     private Date concertTime;
 
     public Integer getConcertId() {

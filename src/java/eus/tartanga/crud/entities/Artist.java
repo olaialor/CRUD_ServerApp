@@ -41,7 +41,6 @@ public class Artist implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer artistId;
 
-    @NotNull
     private byte[] image;
 
     @NotNull

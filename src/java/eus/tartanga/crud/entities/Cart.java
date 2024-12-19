@@ -37,7 +37,7 @@ public class Cart implements Serializable {
     private FanetixClient client;
     private Integer quantity;
     private Boolean bought;
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.DATE)
     private Date orderDate;
 
     public CartId getId() {
