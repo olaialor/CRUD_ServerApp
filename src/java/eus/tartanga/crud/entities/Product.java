@@ -37,7 +37,7 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer productId;
     
-    @OneToMany(fetch = EAGER, cascade = ALL, mappedBy = "product")
+    @OneToMany( cascade = ALL, mappedBy = "product")
     private List<Cart> client;
     
     @NotNull

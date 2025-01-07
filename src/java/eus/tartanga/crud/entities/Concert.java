@@ -25,10 +25,10 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author 2dam
+ * @author Irati
  */
 @Entity
-@Table(name = "Concert", schema = "Fanetix")
+@Table(name = "concert", schema = "Fanetix")
 
 @NamedQueries({
     @NamedQuery(
@@ -55,6 +55,7 @@ import javax.xml.bind.annotation.XmlTransient;
     )
 
 })
+
 @XmlRootElement
 public class Concert implements Serializable {
 
@@ -70,7 +71,8 @@ public class Concert implements Serializable {
     private String concertName;
 
     @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
-    private List<Artist> artistList;
+    private List<Artist> artistsList;
+
 
     private String location;
 
@@ -78,6 +80,7 @@ public class Concert implements Serializable {
 
     @Temporal(TemporalType.DATE)
     private Date concertDate;
+
     @Temporal(TemporalType.TIME)
     private Date concertTime;
 
