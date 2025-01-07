@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,8 +23,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Meylin
  */
+@NamedQueries({
+    @NamedQuery(name="findAllProductsPurchased",query="SELECT * FROM CART WHERE BOUGHT LIKE TRUE"),
+    @NamedQuery(name="findAllProductsNotPurchased",query="SELECT * FROM CART WHERE BOUGHT LIKE FALSE"),
+
+
+
+})
 @Entity
-@Table(name="cart", schema = "Fanetix")
+@Table(name = "cart", schema = "Fanetix")
 @XmlRootElement
 public class Cart implements Serializable {
 
@@ -30,10 +39,10 @@ public class Cart implements Serializable {
     @EmbeddedId
     private CartId id;
     @MapsId("productId")
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Product product;
     @MapsId("email")
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private FanetixClient client;
     private Integer quantity;
     private Boolean bought;
@@ -87,7 +96,7 @@ public class Cart implements Serializable {
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -112,5 +121,5 @@ public class Cart implements Serializable {
     public String toString() {
         return "eus.tartanga.crud.entities.Cart[ id=" + id + " ]";
     }
-    
+
 }
