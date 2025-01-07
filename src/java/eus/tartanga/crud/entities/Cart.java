@@ -23,13 +23,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Meylin
  */
+
+/**
 @NamedQueries({
     @NamedQuery(name="findAllProductsPurchased",query="SELECT * FROM CART WHERE BOUGHT LIKE TRUE"),
     @NamedQuery(name="findAllProductsNotPurchased",query="SELECT * FROM CART WHERE BOUGHT LIKE FALSE"),
-
-
-
 })
+* **/
+
 @Entity
 @Table(name = "cart", schema = "Fanetix")
 @XmlRootElement

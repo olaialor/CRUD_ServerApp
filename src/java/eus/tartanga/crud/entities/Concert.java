@@ -31,23 +31,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "concert", schema = "Fanetix")
 
 @NamedQueries({
-    @NamedQuery(
-            name = "insertIntoRelationTable",
-            query = "INSERT INTO artist_concert (artist_artistId, concert_concertId) VALUES (:artistId, :concertId)" //en teoria esto no se puede hacer
-    )
-    ,
         @NamedQuery(
             name = "ConcertComingSoon",
             query = "SELECT c FROM Concert c WHERE c.concertDate >= CURRENT_DATE ORDER BY c.concertDate ASC" //current date -- coming soon
     )
     ,
-        
         @NamedQuery(
             name = "ConcertFindBySearchTerm",
             query = "SELECT c FROM Concert c WHERE LOWER(c.concertName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(c.city) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(c.location) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
             //like ---mientra escribes
-    )
-    ,
+    ),
         @NamedQuery(
             name = "ConcertFindBetweenDates",
             query = "SELECT c FROM Concert c WHERE c.concertDate BETWEEN :startDate AND :endDate ORDER BY c.concertDate ASC" //between 2 dates
@@ -71,7 +64,7 @@ public class Concert implements Serializable {
     private String concertName;
 
     @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
-    private List<Artist> artistsList;
+    private List<Artist> artistList;
 
 
     private String location;
@@ -108,7 +101,6 @@ public class Concert implements Serializable {
         this.concertName = concertName;
     }
 
-    @XmlTransient
     public List<Artist> getArtistList() {
         return artistList;
     }
