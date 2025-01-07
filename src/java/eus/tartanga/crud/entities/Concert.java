@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,6 +29,33 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "concert", schema = "Fanetix")
+
+@NamedQueries({
+    @NamedQuery(
+            name = "insertIntoRelationTable",
+            query = "INSERT INTO artist_concert (artist_artistId, concert_concertId) VALUES (:artistId, :concertId)" //en teoria esto no se puede hacer
+    )
+    ,
+        @NamedQuery(
+            name = "ConcertComingSoon",
+            query = "SELECT c FROM Concert c WHERE c.concertDate >= CURRENT_DATE ORDER BY c.concertDate ASC" //current date -- coming soon
+    )
+    ,
+        
+        @NamedQuery(
+            name = "ConcertFindBySearchTerm",
+            query = "SELECT c FROM Concert c WHERE LOWER(c.concertName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(c.city) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(c.location) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
+            //like ---mientra escribes
+    )
+    ,
+        @NamedQuery(
+            name = "ConcertFindBetweenDates",
+            query = "SELECT c FROM Concert c WHERE c.concertDate BETWEEN :startDate AND :endDate ORDER BY c.concertDate ASC" //between 2 dates
+            //native query , criteria query , stored procedure ??
+    )
+
+})
+
 @XmlRootElement
 public class Concert implements Serializable {
 
@@ -43,6 +72,7 @@ public class Concert implements Serializable {
 
     @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
     private List<Artist> artistsList;
+
 
     private String location;
 
@@ -79,12 +109,12 @@ public class Concert implements Serializable {
     }
 
     @XmlTransient
-    public List<Artist> getArtistsList() {
-        return artistsList;
+    public List<Artist> getArtistList() {
+        return artistList;
     }
 
-    public void setArtistsList(List<Artist> artistsList) {
-        this.artistsList = artistsList;
+    public void setArtistList(List<Artist> artistList) {
+        this.artistList = artistList;
     }
 
     public String getLocation() {
