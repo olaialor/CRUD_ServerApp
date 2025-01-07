@@ -82,6 +82,49 @@ public class ConcertFacadeREST extends AbstractFacade<Concert> {
     public String countREST() {
         return String.valueOf(super.count());
     }
+    
+    /**
+     * Método para buscar conciertos según un término de búsqueda.
+     * @param searchTerm El término de búsqueda (nombre, ciudad o ubicación).
+     * @return Lista de conciertos que coincidan con el término.
+     */
+    @GET
+    @Path("search/{searchTerm}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Concert> searchByTerm(@PathParam("searchTerm") String searchTerm) {
+        return em.createNamedQuery("ConcertFindBySearchTerm", Concert.class)
+                .setParameter("searchTerm", searchTerm)
+                .getResultList();
+    }
+
+    /**
+     * Método para buscar conciertos cuya fecha sea igual o posterior a hoy.
+     * @return Lista de conciertos futuros.
+     */
+    @GET
+    @Path("comingSoon")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Concert> findComingSoon() {
+        return em.createNamedQuery("ConcertComingSoon", Concert.class)
+                .getResultList();
+    }
+
+    /**
+     * Método para buscar conciertos entre dos fechas específicas.
+     * @param startDate Fecha de inicio (YYYY-MM-DD).
+     * @param endDate Fecha de fin (YYYY-MM-DD).
+     * @return Lista de conciertos entre las fechas dadas.
+     */
+    @GET
+    @Path("betweenDates/{startDate}/{endDate}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Concert> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+        return em.createNamedQuery("ConcertFindBetweenDates", Concert.class)
+                .setParameter("startDate", java.sql.Date.valueOf(startDate))
+                .setParameter("endDate", java.sql.Date.valueOf(endDate))
+                .getResultList();
+    }
+
 
     @Override
     protected EntityManager getEntityManager() {

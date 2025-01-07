@@ -6,8 +6,8 @@
 package eus.tartanga.crud.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -129,6 +128,7 @@ public class Artist implements Serializable {
     public void setConcertList(List<Concert> concertList) {
         this.concertList = concertList;
     }
+
 
     @Override
     public int hashCode() {
