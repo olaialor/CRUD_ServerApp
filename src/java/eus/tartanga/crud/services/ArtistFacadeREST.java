@@ -82,6 +82,36 @@ public class ArtistFacadeREST extends AbstractFacade<Artist> {
     public String countREST() {
         return String.valueOf(super.count());
     }
+    
+     /**
+     * Método para buscar artistas según un término de búsqueda.
+     * @param searchTerm El término de búsqueda (nombre o compañía.).
+     * @return Lista de artistas que coincidan con el término.
+     */
+    @GET
+    @Path("search/{searchTerm}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Artist> searchByTerm(@PathParam("searchTerm") String searchTerm) {
+        return em.createNamedQuery("ArtistFindBySearchTerm", Artist.class)
+                .setParameter("searchTerm", searchTerm)
+                .getResultList();
+    }
+    
+     /**
+     * Método para buscar debut de artistas entre dos fechas específicas.
+     * @param startDate Fecha de inicio (YYYY-MM-DD).
+     * @param endDate Fecha de fin (YYYY-MM-DD).
+     * @return Lista de artistas entre las fechas dadas.
+     */
+    @GET
+    @Path("betweenDates/{startDate}/{endDate}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Artist> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+        return em.createNamedQuery("ArtistFindBetweenDates", Artist.class)
+                .setParameter("startDate", java.sql.Date.valueOf(startDate))
+                .setParameter("endDate", java.sql.Date.valueOf(endDate))
+                .getResultList();
+    }
 
     @Override
     protected EntityManager getEntityManager() {
