@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "concert", schema = "Fanetix")
 
 @NamedQueries({
-    @NamedQuery(
+    /*@NamedQuery(
             name = "insertIntoRelationTable",
             query = "INSERT INTO artist_concert (artist_artistId, concert_concertId) VALUES (:artistId, :concertId)" //en teoria esto no se puede hacer
     )
-    ,
+    ,*/
         @NamedQuery(
             name = "ConcertComingSoon",
             query = "SELECT c FROM Concert c WHERE c.concertDate >= CURRENT_DATE ORDER BY c.concertDate ASC" //current date -- coming soon
@@ -71,7 +71,7 @@ public class Concert implements Serializable {
     private String concertName;
 
     @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
-    private List<Artist> artistsList;
+    private List<Artist> artistList;
 
 
     private String location;

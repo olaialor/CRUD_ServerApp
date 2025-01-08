@@ -20,7 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.PathSegment;
 
 /**
  *
@@ -33,62 +32,44 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
     @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
     private EntityManager em;
 
-    private CartId getPrimaryKey(PathSegment pathSegment) {
-        /*
-         * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;productId=productIdValue;email=emailValue'.
-         * Here 'somePath' is a result of getPath() method invocation and
-         * it is ignored in the following code.
-         * Matrix parameters are used as field names to build a primary key instance.
-         */
-        eus.tartanga.crud.entities.CartId key = new eus.tartanga.crud.entities.CartId();
-        javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
-        java.util.List<String> productId = map.get("productId");
-        if (productId != null && !productId.isEmpty()) {
-            key.setProductId(new java.lang.Integer(productId.get(0)));
-        }
-        java.util.List<String> email = map.get("email");
-        if (email != null && !email.isEmpty()) {
-            key.setEmail(email.get(0));
-        }
-        return key;
-    }
-
     public CartFacadeREST() {
         super(Cart.class);
     }
-    //Crear
 
+    //Crear pasing the object
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Cart entity) {
         super.create(entity);
     }
-    //Update
 
+    //Update pasing the object
     @PUT
-    @Path("{id}")
+    @Path("{email}/{productId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, Cart entity) {
+    public void edit(@PathParam("email") String email, @PathParam("productId") Integer id, Cart entity) {
         super.edit(entity);
     }
 
+    //Delete by id
     @DELETE
     @Path("{email}/{productId}")
-    public void remove(@PathParam("email") String email,@PathParam("productId") Integer id) {
-       CartId idCart=new CartId(id,email);
-       super.remove(super.find(idCart));
+    public void remove(@PathParam("email") String email, @PathParam("productId") Integer id) {
+        CartId idCart = new CartId(id, email);
+        super.remove(super.find(idCart));
     }
 
+    //Search by id
     @GET
     @Path("{email}/{productId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Cart find(@PathParam("email") String email,@PathParam("productId") Integer id) {
-        CartId idCart=new CartId(id,email);
+    public Cart find(@PathParam("email") String email, @PathParam("productId") Integer id) {
+        CartId idCart = new CartId(id, email);
         return super.find(idCart);
     }
 
+    //Get all the products
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -96,7 +77,53 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
         return super.findAll();
     }
 
-   
+    //Get all products that have been bought
+    @GET
+    @Path("bought")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Cart> findAllProductsBought() {
+        return getEntityManager()
+                .createNamedQuery("findAllProductsBought", Cart.class)
+                .getResultList();
+    }
+
+    @GET
+    @Path("notbought")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Cart> findAllProductsNotBought() {
+        return getEntityManager()
+                .createNamedQuery("findAllProductsNotBought", Cart.class)
+                .getResultList();
+    }
+
+    @GET
+    @Path("byArtist/{artistName}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Cart> findAllByArtist(@PathParam("artistName") String artistName) {
+        return getEntityManager()
+                .createNamedQuery("findAllByArtist", Cart.class)
+                .setParameter("artistName", artistName)
+                .getResultList();
+    }
+
+    /**
+     * Método para buscar conciertos entre dos fechas específicas.
+     *
+     * @param startDate Fecha de inicio (YYYY-MM-DD).
+     * @param endDate Fecha de fin (YYYY-MM-DD).
+     * @return Lista de conciertos entre las fechas dadas.
+     */
+    @GET
+    @Path("betweenDates/{startDate}/{endDate}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Cart> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+        return em.createNamedQuery("CartFindBetweenDates", Cart.class)
+                .setParameter("startDate", java.sql.Date.valueOf(startDate))
+                .setParameter("endDate", java.sql.Date.valueOf(endDate))
+                .getResultList();
+    }
+
+    //Count the products that are in the cart
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
