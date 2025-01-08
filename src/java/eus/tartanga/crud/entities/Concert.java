@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "concert", schema = "Fanetix")
-
+/*
 @NamedQueries({
     @NamedQuery(
             name = "insertIntoRelationTable",
@@ -54,7 +54,7 @@ import javax.xml.bind.annotation.XmlTransient;
             //native query , criteria query , stored procedure ??
     )
 
-})
+})*/
 
 @XmlRootElement
 public class Concert implements Serializable {
@@ -71,7 +71,7 @@ public class Concert implements Serializable {
     private String concertName;
 
     @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
-    private List<Artist> artistsList;
+    private List<Artist> artistList;
 
 
     private String location;

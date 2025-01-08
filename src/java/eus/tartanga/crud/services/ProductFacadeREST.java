@@ -83,9 +83,55 @@ public class ProductFacadeREST extends AbstractFacade<Product> {
         return String.valueOf(super.count());
     }
 
+    /**
+     * Método para buscar conciertos según un término de búsqueda.
+     *
+     * @param searchTerm El término de búsqueda (nombre, ciudad o ubicación).
+     * @return Lista de conciertos que coincidan con el término.
+     */
+    @GET
+    @Path("search/{searchTerm}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Product> searchByTerm(@PathParam("searchTerm") String searchTerm) {
+        return em.createNamedQuery("ProductFindBySearchTerm", Product.class)
+                .setParameter("searchTerm", searchTerm)
+                .getResultList();
+    }
+
+    /**
+     * Método para buscar productos cuyo stock sea mayor a 0.
+     *
+     * @return Lista de conciertos futuros.
+     */
+    @GET
+    @Path("stock")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Product> findStock() {
+        return em.createNamedQuery("ProductStock", Product.class)
+                .getResultList();
+    }
+
+    /**
+     * Método para buscar productos que tengan una release date entre dos fechas
+     * específicas.
+     *
+     * @param startDate Fecha de inicio (YYYY-MM-DD).
+     * @param endDate Fecha de fin (YYYY-MM-DD).
+     * @return Lista de productos con realease date entre las fechas dadas.
+     */
+    @GET
+    @Path("betweenDates/{startDate}/{endDate}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Product> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+        return em.createNamedQuery("ProductFindBetweenDates", Product.class)
+                .setParameter("startDate", java.sql.Date.valueOf(startDate))
+                .setParameter("endDate", java.sql.Date.valueOf(endDate))
+                .getResultList();
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

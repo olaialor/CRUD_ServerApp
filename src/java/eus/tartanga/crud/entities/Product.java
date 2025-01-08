@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -29,6 +31,25 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="Product", schema="Fanetix")
+
+@NamedQueries({
+        @NamedQuery(
+            name = "ProductStock",
+            query = "SELECT p FROM Product p WHERE p.stock >=1"
+    )
+    ,
+        @NamedQuery(
+            name = "ProductFindBySearchTerm",
+            query = "SELECT p FROM Product p WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(p.artist.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
+    )
+    ,
+        @NamedQuery(
+            name = "ProductFindBetweenDates",
+            query = "SELECT p FROM Product p WHERE p.releaseDate BETWEEN :startDate AND :endDate ORDER BY p.releaseDate ASC" 
+    )
+
+})
+
 @XmlRootElement
 public class Product implements Serializable {
 
