@@ -5,7 +5,6 @@
  */
 package eus.tartanga.crud.ejb;
 
-import eus.tartanga.crud.ejb.ConcertManagerLocal;
 import eus.tartanga.crud.entities.Concert;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -19,7 +18,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class EJBConcertManager implements ConcertManagerLocal {
 
-    @PersistenceContext(unitName = "HibernateQueriesPU")
+    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
     private EntityManager em;
 
     @Override

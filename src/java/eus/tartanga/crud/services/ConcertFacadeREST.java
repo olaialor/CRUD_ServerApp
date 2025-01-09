@@ -5,14 +5,13 @@
  */
 package eus.tartanga.crud.services;
 
+import eus.tartanga.crud.ejb.ConcertManagerLocal;
 import eus.tartanga.crud.ejb.EJBConcertManager;
 import eus.tartanga.crud.entities.Concert;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -30,11 +29,8 @@ import javax.ws.rs.core.MediaType;
 @Path("eus.tartanga.crud.entities.concert")
 public class ConcertFacadeREST {
 
-    @EJB(name = "eus.tartanga.crud.services.EJBConcertManager")
-    private EJBConcertManager ejb;
-
-    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
-    private EntityManager em;
+    @EJB(name="eus.tartanga.crud.ejb.EJBConcertManager")
+    private ConcertManagerLocal ejb;
 
     private Logger LOGGER = Logger.getLogger(ConcertFacadeREST.class.getName());
 
