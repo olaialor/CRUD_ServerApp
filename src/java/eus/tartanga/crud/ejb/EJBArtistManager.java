@@ -9,6 +9,7 @@ import eus.tartanga.crud.ejb.ArtistManagerLocal;
 import eus.tartanga.crud.entities.Artist;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.InternalServerErrorException;
@@ -17,9 +18,10 @@ import javax.ws.rs.InternalServerErrorException;
  *
  * @author olaia
  */
+@Stateless
 public class EJBArtistManager implements ArtistManagerLocal {
 
-    @PersistenceContext(unitName = "HibernateQueriesPU")
+    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
     private EntityManager em;
 
     @Override
@@ -50,6 +52,17 @@ public class EJBArtistManager implements ArtistManagerLocal {
     }
 
     @Override
+    public Artist findArtist(Integer artistId) {
+        Artist artist = null;
+        try {
+            artist = em.find(Artist.class, artistId);
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
+        return artist;
+    }
+
+    @Override
     public List<Artist> findAllArtist() {
         List<Artist> artist;
         try {
@@ -62,22 +75,35 @@ public class EJBArtistManager implements ArtistManagerLocal {
 
     @Override
     public List<Artist> findArtistById(Integer artistId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Artist> artists;
+        try {
+            artists = em.createNamedQuery("findArtistById")
+                    .setParameter("id", artistId)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
+        return artists;
     }
 
     @Override
-    public List<Artist> findArtistByName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Artist> ArtistFindBySearchTerm(String searchTerm) {
+        return em.createNamedQuery("ArtistFindBySearchTerm", Artist.class).setParameter("searchTerm", searchTerm)
+                .getResultList();
     }
 
     @Override
-    public List<Artist> findArtistByCompany(String company) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<Artist> findArtistByDate(Date startDate, Date endDate) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Artist> ArtistFindBetweenDates(String startDate, String endDate) {
+        List<Artist> artists;
+        try {
+            artists = em.createNamedQuery("ArtistFindBetweenDates")
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e.getMessage());
+        }
+        return artists;
     }
 
 }
