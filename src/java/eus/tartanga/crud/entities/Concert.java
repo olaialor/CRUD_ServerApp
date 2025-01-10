@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @NamedQueries({
+      @NamedQuery(
             name = "ConcertComingSoon",
             query = "SELECT c FROM Concert c WHERE c.concertDate >= CURRENT_DATE ORDER BY c.concertDate ASC"
     )

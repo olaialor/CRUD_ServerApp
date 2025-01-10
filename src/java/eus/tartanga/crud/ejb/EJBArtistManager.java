@@ -97,8 +97,8 @@ public class EJBArtistManager implements ArtistManagerLocal {
         List<Artist> artists;
         try {
             artists = em.createNamedQuery("ArtistFindBetweenDates")
-                    .setParameter("startDate", startDate)
-                    .setParameter("endDate", endDate)
+                    .setParameter("startDate", java.sql.Date.valueOf(startDate))
+                    .setParameter("endDate", java.sql.Date.valueOf(endDate))
                     .getResultList();
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());

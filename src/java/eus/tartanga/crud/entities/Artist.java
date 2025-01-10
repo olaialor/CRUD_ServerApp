@@ -31,8 +31,6 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Olaia
  */
-@Entity
-@Table(name = "artist", schema = "Fanetix")
 
 @NamedQueries({
     @NamedQuery(
@@ -52,6 +50,8 @@ import javax.xml.bind.annotation.XmlTransient;
     )
 
 })
+@Entity
+@Table(name = "artist", schema = "Fanetix")
 @XmlRootElement
 public class Artist implements Serializable {
 

@@ -7,8 +7,6 @@ package eus.tartanga.crud.services;
 
 import eus.tartanga.crud.ejb.ArtistManagerLocal;
 import eus.tartanga.crud.entities.Artist;
-import static eus.tartanga.crud.entities.Artist_.artistId;
-import static eus.tartanga.crud.entities.Product_.artist;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
