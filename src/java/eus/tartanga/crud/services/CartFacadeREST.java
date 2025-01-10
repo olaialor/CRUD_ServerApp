@@ -76,16 +76,16 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
 
     @DELETE
     @Path("{email}/{productId}")
-    public void remove(@PathParam("email") String email,@PathParam("productId") Integer id) {
-       CartId idCart=new CartId(id,email);
-       super.remove(super.find(idCart));
+    public void remove(@PathParam("email") String email, @PathParam("productId") Integer id) {
+        CartId idCart = new CartId(id, email);
+        super.remove(super.find(idCart));
     }
 
     @GET
     @Path("{email}/{productId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Cart find(@PathParam("email") String email,@PathParam("productId") Integer id) {
-        CartId idCart=new CartId(id,email);
+    public Cart find(@PathParam("email") String email, @PathParam("productId") Integer id) {
+        CartId idCart = new CartId(id, email);
         return super.find(idCart);
     }
 
@@ -96,7 +96,6 @@ public class CartFacadeREST extends AbstractFacade<Cart> {
         return super.findAll();
     }
 
-   
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)

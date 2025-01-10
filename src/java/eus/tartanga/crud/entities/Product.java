@@ -29,8 +29,6 @@ import javax.validation.constraints.NotNull;
  *
  * @author Elbire
  */
-@Entity
-@Table(name = "Product", schema = "Fanetix")
 
 @NamedQueries({
     @NamedQuery(
@@ -54,7 +52,8 @@ import javax.validation.constraints.NotNull;
     )
 
 })
-
+@Entity
+@Table(name = "Product", schema = "Fanetix")
 @XmlRootElement
 public class Product implements Serializable {
 

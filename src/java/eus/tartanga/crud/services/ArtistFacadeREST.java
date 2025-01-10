@@ -132,5 +132,5 @@ public class ArtistFacadeREST{
             throw new InternalServerErrorException(e.getMessage());
         }
     }
-    
+
 }

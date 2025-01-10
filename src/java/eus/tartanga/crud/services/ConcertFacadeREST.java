@@ -5,11 +5,12 @@
  */
 package eus.tartanga.crud.services;
 
+import eus.tartanga.crud.ejb.ConcertManagerLocal;
 import eus.tartanga.crud.entities.Concert;
 import java.util.List;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -22,113 +23,119 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Irati
  */
-@Stateless
 @Path("eus.tartanga.crud.entities.concert")
-public class ConcertFacadeREST extends AbstractFacade<Concert> {
+public class ConcertFacadeREST {
 
-    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
-    private EntityManager em;
+    @EJB(name = "eus.tartanga.crud.ejb.EJBConcertManager")
+    private ConcertManagerLocal ejb;
 
-    public ConcertFacadeREST() {
-        super(Concert.class);
-    }
+    private Logger LOGGER = Logger.getLogger(ConcertFacadeREST.class.getName());
 
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Concert entity) {
-        super.create(entity);
+    public void createConcert(Concert concert) {
+        try {
+            LOGGER.log(Level.INFO, "Creating Concert{0}", concert.getConcertId());
+            ejb.createConcert(concert);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            //throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Concert entity) {
-        super.edit(entity);
+    public void updateConcert(@PathParam("id") Integer id, Concert concert) {
+        try {
+            LOGGER.log(Level.INFO, "Updating Concert {0}", concert.getConcertId());
+            ejb.updateConcert(concert);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            //throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+    public void removeConcert(@PathParam("id") Integer id) {
+        try {
+            LOGGER.log(Level.INFO, "Deleting Concert {0}", id);
+            ejb.removeConcert(ejb.findConcert(id));
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Concert find(@PathParam("id") Integer id) {
-        return super.find(id);
+    public Concert findConcert(@PathParam("id") Integer id) {
+        try {
+            LOGGER.log(Level.INFO, "Reading data for concert {0}", id);
+            return ejb.findConcert(id);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
+        return ejb.findConcert(id);
     }
 
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Concert> findAll() {
-        return super.findAll();
+    public List<Concert> findAllConcerts() {
+        LOGGER.log(Level.INFO, "Reading data for all concerts {0}");
+        return ejb.findAllConcerts();
+
     }
 
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Concert> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-    
     /**
-     * Método para buscar conciertos según un término de búsqueda.
-     * @param searchTerm El término de búsqueda (nombre, ciudad o ubicación).
-     * @return Lista de conciertos que coincidan con el término.
+     *
      */
     @GET
     @Path("search/{searchTerm}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Concert> searchByTerm(@PathParam("searchTerm") String searchTerm) {
-        return em.createNamedQuery("ConcertFindBySearchTerm", Concert.class)
-                .setParameter("searchTerm", searchTerm)
-                .getResultList();
+        try {
+            return ejb.searchByTerm(searchTerm);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
+        return ejb.searchByTerm(searchTerm);
     }
 
     /**
-     * Método para buscar conciertos cuya fecha sea igual o posterior a hoy.
-     * @return Lista de conciertos futuros.
      */
     @GET
     @Path("comingSoon")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Concert> findComingSoon() {
-        return em.createNamedQuery("ConcertComingSoon", Concert.class)
-                .getResultList();
+        try {
+            return ejb.findComingSoon();
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
+        return ejb.findComingSoon();
     }
 
     /**
-     * Método para buscar conciertos entre dos fechas específicas.
-     * @param startDate Fecha de inicio (YYYY-MM-DD).
-     * @param endDate Fecha de fin (YYYY-MM-DD).
-     * @return Lista de conciertos entre las fechas dadas.
+     *
      */
     @GET
     @Path("betweenDates/{startDate}/{endDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Concert> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
-        return em.createNamedQuery("ConcertFindBetweenDates", Concert.class)
-                .setParameter("startDate", java.sql.Date.valueOf(startDate))
-                .setParameter("endDate", java.sql.Date.valueOf(endDate))
-                .getResultList();
+        try {
+            return ejb.findBetweenDates(startDate, endDate);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
+        return ejb.findBetweenDates(startDate, endDate);
     }
-
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-    
 }
