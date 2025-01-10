@@ -5,16 +5,11 @@
  */
 package eus.tartanga.crud.entities;
 
-import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import static javax.persistence.FetchType.EAGER;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,12 +17,16 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Meylin
+ * @author Meylin and Irati
  */
+@NamedQueries({
+    @NamedQuery(name = "findAllClients", query = "SELECT c FROM FanetixClient c")
+})
+
 @Entity
-@Table(name = "Fanetix_client", schema = "Fanetix")
+@Table(name = "fanetix_client", schema = "Fanetix")
 @XmlRootElement
-public class FanetixClient extends FanetixUser{
+public class FanetixClient extends FanetixUser {
 
     private static final long serialVersionUID = 1L;
     private String fullName;
@@ -35,7 +34,7 @@ public class FanetixClient extends FanetixUser{
     private Integer zip;
     private String city;
     private Integer mobile;
-    @OneToMany( cascade = ALL, mappedBy = "client")
+    @OneToMany(cascade = ALL, mappedBy = "client")
     private List<Cart> products;
 
     public String getFullName() {

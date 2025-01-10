@@ -5,8 +5,12 @@
  */
 package eus.tartanga.crud.services;
 
+import eus.tartanga.crud.ejb.FanetixClientManagerLocal;
 import eus.tartanga.crud.entities.FanetixClient;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,70 +26,71 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Irati
  */
-@Stateless
 @Path("eus.tartanga.crud.entities.fanetixclient")
-public class FanetixClientFacadeREST extends AbstractFacade<FanetixClient> {
+public class FanetixClientFacadeREST {
 
-    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
-    private EntityManager em;
+    @EJB(name = "eus.tartanga.crud.ejb.EJBFanetixClientManager")
+    private FanetixClientManagerLocal ejb;
 
-    public FanetixClientFacadeREST() {
-        super(FanetixClient.class);
-    }
+    private Logger LOGGER = Logger.getLogger(FanetixClientFacadeREST.class.getName());
 
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(FanetixClient entity) {
-        super.create(entity);
+    public void createClient(FanetixClient client) {
+        try {
+            LOGGER.log(Level.INFO, "Creating Client{0}", client.getEmail());
+            ejb.createClient(client);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            //throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
-    @Path("{id}")
+    @Path("{email}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") String id, FanetixClient entity) {
-        super.edit(entity);
+    public void updateClient(@PathParam("email") String email, FanetixClient client) {
+        try {
+            LOGGER.log(Level.INFO, "Updating Client {0}", client.getEmail());
+            ejb.updateClient(client);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            //throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") String id) {
-        super.remove(super.find(id));
+    @Path("{email}")
+    public void removeClient(@PathParam("email") String email) {
+        try {
+            LOGGER.log(Level.INFO, "Deleting Client {0}", email);
+            ejb.removeClient(ejb.findClient(email));
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
-    @Path("{id}")
+    @Path("{email}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public FanetixClient find(@PathParam("id") String id) {
-        return super.find(id);
+    public FanetixClient findClient(@PathParam("email") String email) {
+        try {
+            LOGGER.log(Level.INFO, "Reading data for client {0}", email);
+            return ejb.findClient(email);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
+        return ejb.findClient(email);
     }
 
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<FanetixClient> findAll() {
-        return super.findAll();
+    public List<FanetixClient> findAllClients() {
+        LOGGER.log(Level.INFO, "Reading data for all clients {0}");
+        return ejb.findAllClients();
     }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<FanetixClient> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-    
 }

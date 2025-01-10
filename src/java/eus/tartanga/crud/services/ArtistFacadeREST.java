@@ -5,14 +5,20 @@
  */
 package eus.tartanga.crud.services;
 
+import eus.tartanga.crud.ejb.ArtistManagerLocal;
 import eus.tartanga.crud.entities.Artist;
+import static eus.tartanga.crud.entities.Artist_.artistId;
+import static eus.tartanga.crud.entities.Product_.artist;
 import java.util.List;
-import javax.ejb.Stateless;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -24,68 +30,107 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
-@Stateless
 @Path("eus.tartanga.crud.entities.artist")
-public class ArtistFacadeREST extends AbstractFacade<Artist> {
+public class ArtistFacadeREST{
 
-    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
-    private EntityManager em;
-
-    public ArtistFacadeREST() {
-        super(Artist.class);
-    }
+    @EJB(name="eus.tartanga.crud.ejb.EJBArtistManager")
+    private ArtistManagerLocal ejb;
+    
+    private Logger LOGGER=Logger.getLogger(ArtistFacadeREST.class.getName());
 
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Artist entity) {
-        super.create(entity);
+    @Consumes(MediaType.APPLICATION_XML)
+    public void createArtist(Artist artist) {
+        try{
+            LOGGER.log(Level.INFO,"Creating Artist{0}",artist.getArtistId());
+            ejb.createArtist(artist);
+        }catch(Exception e){
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
-    @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Artist entity) {
-        super.edit(entity);
+    @Consumes(MediaType.APPLICATION_XML)
+    public void updateArtist(Artist artist) {
+        try{
+            LOGGER.log(Level.INFO,"Updating Artist {0}",artist.getArtistId());
+            ejb.updateArtist(artist);
+        }catch(Exception e){
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+    public void removeArtist(@PathParam("id")Integer id) {
+        try{
+            LOGGER.log(Level.INFO,"Deleting Artist {0}",id);
+            ejb.removeArtist(ejb.findArtist(id));
+        }catch(Exception e){
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
-    @GET
+
+   @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Artist find(@PathParam("id") Integer id) {
-        return super.find(id);
+    @Produces(MediaType.APPLICATION_XML)
+    public Artist findArtist(@PathParam("id") Integer id) {
+        try{
+            LOGGER.log(Level.INFO,"Reading data for artist {0}",id);
+            return ejb.findArtist(id);
+        }catch(Exception e){
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
-    @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Artist> findAll() {
-        return super.findAll();
-    }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Artist> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
+   @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Artist> findAllArtist() {
+       
+            LOGGER.log(Level.INFO,"Reading data for all artist {0}");
+            return ejb.findAllArtist();
+        
+        
     }
     
+     /**
+     * Método para buscar artistas según un término de búsqueda.
+     * @param searchTerm El término de búsqueda (nombre o compañía.).
+     * @return Lista de artistas que coincidan con el término.
+     */
+    @GET
+    @Path("search/{searchTerm}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Artist> searchByTerm(@PathParam("searchTerm") String searchTerm) {
+          try{
+            return ejb.ArtistFindBySearchTerm(searchTerm);
+        }catch(Exception e){
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+    
+     /**
+     * Método para buscar debut de artistas entre dos fechas específicas.
+     * @param startDate Fecha de inicio (YYYY-MM-DD).
+     * @param endDate Fecha de fin (YYYY-MM-DD).
+     * @return Lista de artistas entre las fechas dadas.
+     */
+    @GET
+    @Path("betweenDates/{startDate}/{endDate}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Artist> ArtistFindBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+          try{
+            return ejb.ArtistFindBetweenDates(startDate,endDate);
+        }catch(Exception e){
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
+    }
+
 }

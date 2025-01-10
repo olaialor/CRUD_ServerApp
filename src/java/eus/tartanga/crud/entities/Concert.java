@@ -21,41 +21,31 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Irati
  */
-@Entity
-@Table(name = "concert", schema = "Fanetix")
 
 @NamedQueries({
-    /*@NamedQuery(
-            name = "insertIntoRelationTable",
-            query = "INSERT INTO artist_concert (artist_artistId, concert_concertId) VALUES (:artistId, :concertId)" //en teoria esto no se puede hacer
-    )
-    ,*/
-        @NamedQuery(
             name = "ConcertComingSoon",
-            query = "SELECT c FROM Concert c WHERE c.concertDate >= CURRENT_DATE ORDER BY c.concertDate ASC" //current date -- coming soon
+            query = "SELECT c FROM Concert c WHERE c.concertDate >= CURRENT_DATE ORDER BY c.concertDate ASC"
     )
     ,
-        
         @NamedQuery(
             name = "ConcertFindBySearchTerm",
             query = "SELECT c FROM Concert c WHERE LOWER(c.concertName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(c.city) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(c.location) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
-            //like ---mientra escribes
     )
     ,
         @NamedQuery(
             name = "ConcertFindBetweenDates",
-            query = "SELECT c FROM Concert c WHERE c.concertDate BETWEEN :startDate AND :endDate ORDER BY c.concertDate ASC" //between 2 dates
-            //native query , criteria query , stored procedure ??
+            query = "SELECT c FROM Concert c WHERE c.concertDate BETWEEN :startDate AND :endDate ORDER BY c.concertDate ASC"
     )
-
+    ,
+        @NamedQuery(name = "findAllConcerts", query = "SELECT c FROM Concert c")
 })
-
+@Entity
+@Table(name = "concert", schema = "Fanetix")
 @XmlRootElement
 public class Concert implements Serializable {
 
@@ -72,7 +62,6 @@ public class Concert implements Serializable {
 
     @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
     private List<Artist> artistList;
-
 
     private String location;
 
@@ -108,7 +97,6 @@ public class Concert implements Serializable {
         this.concertName = concertName;
     }
 
-    @XmlTransient
     public List<Artist> getArtistList() {
         return artistList;
     }

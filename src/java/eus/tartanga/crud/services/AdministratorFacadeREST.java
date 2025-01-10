@@ -5,11 +5,12 @@
  */
 package eus.tartanga.crud.services;
 
+import eus.tartanga.crud.ejb.AdministratorManagerLocal;
 import eus.tartanga.crud.entities.Administrator;
 import java.util.List;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,68 +25,70 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
-@Stateless
 @Path("eus.tartanga.crud.entities.administrator")
-public class AdministratorFacadeREST extends AbstractFacade<Administrator> {
+public class AdministratorFacadeREST {
 
-    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
-    private EntityManager em;
+    @EJB(name = "eus.tartanga.crud.ejb.EJBAdministratorManager")
+    private AdministratorManagerLocal ejb;
 
-    public AdministratorFacadeREST() {
-        super(Administrator.class);
-    }
+    private Logger LOGGER = Logger.getLogger(AdministratorFacadeREST.class.getName());
 
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Administrator entity) {
-        super.create(entity);
+    @Consumes(MediaType.APPLICATION_XML)
+    public void create(Administrator administrator) {
+        try {
+            LOGGER.log(Level.INFO, "Creating Administrator{0}", administrator.getEmail());
+            ejb.create(administrator);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            //throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
-    @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") String id, Administrator entity) {
-        super.edit(entity);
+    @Consumes(MediaType.APPLICATION_XML)
+    public void update(Administrator administrator) {
+        try {
+            LOGGER.log(Level.INFO, "Updating Administrator{0}", administrator.getEmail());
+            ejb.update(administrator);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") String id) {
-        super.remove(super.find(id));
+    @Path("{email}")
+    public void remove(@PathParam("email") String email) {
+        try {
+            LOGGER.log(Level.INFO, "Deleting Administrator{0}", email);
+            ejb.remove(ejb.find(email));
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            // throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
-    @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Administrator find(@PathParam("id") String id) {
-        return super.find(id);
+    @Path("{email}")
+    @Produces(MediaType.APPLICATION_XML)
+    public Administrator find(@PathParam("email") String email) {
+        try {
+            LOGGER.log(Level.INFO, "Reading data for Administrator{0}", email);
+            return ejb.find(email);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            //  throw new InternalServerErrorException(e.getMessage());
+        }
+       return ejb.find(email);
     }
 
     @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_XML)
     public List<Administrator> findAll() {
-        return super.findAll();
+        LOGGER.log(Level.INFO, "Reading data for all administrator{0}");
+        return ejb.findAll();
+
     }
 
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Administrator> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-    
 }

@@ -22,8 +22,8 @@ public class ApplicationConfig extends Application {
     }
 
     /**
-     * Registra todas las clases de recursos RESTful.
-     * Este método es útil para mantener un registro centralizado de recursos.
+     * Registra todas las clases de recursos RESTful. Este método es útil para
+     * mantener un registro centralizado de recursos.
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(eus.tartanga.crud.services.AdministratorFacadeREST.class);
@@ -32,5 +32,5 @@ public class ApplicationConfig extends Application {
         resources.add(eus.tartanga.crud.services.ConcertFacadeREST.class);
         resources.add(eus.tartanga.crud.services.FanetixClientFacadeREST.class);
         resources.add(eus.tartanga.crud.services.ProductFacadeREST.class);
-    }  
+    }
 }

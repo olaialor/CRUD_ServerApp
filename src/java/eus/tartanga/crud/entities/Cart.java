@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Meylin
  */
+
 @NamedQueries({
     @NamedQuery(name = "findAllProductsBought", query = "SELECT c FROM Cart c WHERE c.bought = TRUE")
     ,

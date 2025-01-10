@@ -88,7 +88,6 @@ public class CartFacadeREST {
 
         LOGGER.log(Level.INFO, "Finding cart with email: {0} and productId: {1}", new Object[]{email, productId});
         return ejb.findCart(email, productId);
-
     }
 
     @GET
