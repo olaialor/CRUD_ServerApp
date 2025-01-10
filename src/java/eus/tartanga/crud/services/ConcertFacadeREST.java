@@ -6,7 +6,6 @@
 package eus.tartanga.crud.services;
 
 import eus.tartanga.crud.ejb.ConcertManagerLocal;
-import eus.tartanga.crud.ejb.EJBConcertManager;
 import eus.tartanga.crud.entities.Concert;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 @Path("eus.tartanga.crud.entities.concert")
 public class ConcertFacadeREST {
 
-    @EJB(name="eus.tartanga.crud.ejb.EJBConcertManager")
+    @EJB(name = "eus.tartanga.crud.ejb.EJBConcertManager")
     private ConcertManagerLocal ejb;
 
     private Logger LOGGER = Logger.getLogger(ConcertFacadeREST.class.getName());

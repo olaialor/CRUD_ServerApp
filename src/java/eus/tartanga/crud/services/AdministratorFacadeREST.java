@@ -87,5 +87,5 @@ public class AdministratorFacadeREST extends AbstractFacade<Administrator> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

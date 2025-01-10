@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
  * @author Elbire
  */
 @Entity
-@Table(name="Product", schema="Fanetix")
+@Table(name = "Product", schema = "Fanetix")
 @XmlRootElement
 public class Product implements Serializable {
 
@@ -36,10 +36,10 @@ public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer productId;
-    
-    @OneToMany( cascade = ALL, mappedBy = "product")
+
+    @OneToMany(cascade = ALL, mappedBy = "product")
     private List<Cart> client;
-    
+
     @NotNull
     private String title;
     @NotNull
@@ -48,7 +48,7 @@ public class Product implements Serializable {
     @ManyToOne
     private Artist artist;
     @NotNull
-    @Temporal (TemporalType.DATE)
+    @Temporal(TemporalType.DATE)
     private Date releaseDate;
     @NotNull
     private float price;

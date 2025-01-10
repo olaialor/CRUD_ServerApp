@@ -26,20 +26,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Irati
  */
-
 @NamedQueries({
-        @NamedQuery(
+    @NamedQuery(
             name = "ConcertComingSoon",
-            query = "SELECT c FROM Concert c WHERE c.concertDate >= CURRENT_DATE ORDER BY c.concertDate ASC" 
-    ),
+            query = "SELECT c FROM Concert c WHERE c.concertDate >= CURRENT_DATE ORDER BY c.concertDate ASC"
+    )
+    ,
         @NamedQuery(
             name = "ConcertFindBySearchTerm",
             query = "SELECT c FROM Concert c WHERE LOWER(c.concertName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(c.city) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(c.location) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
-    ),
+    )
+    ,
         @NamedQuery(
             name = "ConcertFindBetweenDates",
             query = "SELECT c FROM Concert c WHERE c.concertDate BETWEEN :startDate AND :endDate ORDER BY c.concertDate ASC"
-    ),
+    )
+    ,
         @NamedQuery(name = "findAllConcerts", query = "SELECT c FROM Concert c")
 })
 @Entity
@@ -60,7 +62,6 @@ public class Concert implements Serializable {
 
     @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
     private List<Artist> artistList;
-
 
     private String location;
 

@@ -87,5 +87,5 @@ public class ProductFacadeREST extends AbstractFacade<Product> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

@@ -87,5 +87,5 @@ public class ArtistFacadeREST extends AbstractFacade<Artist> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

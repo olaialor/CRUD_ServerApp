@@ -128,7 +128,6 @@ public class Artist implements Serializable {
         this.concertList = concertList;
     }
 
-
     @Override
     public int hashCode() {
         int hash = 0;

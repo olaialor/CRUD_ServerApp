@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "administrator", schema = "Fanetix")
 @XmlRootElement
 public class Administrator extends FanetixUser {
-    
+
     private static final long serialVersionUID = 1L;
     @NotNull
     @Temporal(TemporalType.DATE)

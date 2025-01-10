@@ -37,7 +37,6 @@ public class FanetixUser implements Serializable {
         this.passwd = passwd;
     }
 
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -62,5 +61,5 @@ public class FanetixUser implements Serializable {
     public String toString() {
         return "eus.tartanga.crud.entities.FanetixUser[ id=" + email + " ]";
     }
-    
+
 }
