@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "concert", schema = "Fanetix")
-
+/*
 @NamedQueries({
         @NamedQuery(
             name = "ConcertComingSoon",
@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlTransient;
             //native query , criteria query , stored procedure ??
     )
 
-})
+})*/
 
 @XmlRootElement
 public class Concert implements Serializable {
