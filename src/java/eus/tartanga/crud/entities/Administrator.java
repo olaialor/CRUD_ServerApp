@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,8 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Meylin
+ * @author Meylin and Irati
  */
+
+@NamedQueries({
+    @NamedQuery(name = "findAll", query = "SELECT c FROM Administrator c")
+})
+
 @Entity
 @Table(name = "administrator", schema = "Fanetix")
 @XmlRootElement
