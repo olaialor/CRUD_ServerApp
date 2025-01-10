@@ -24,11 +24,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Meylin
  */
 
-/*
 @NamedQueries({
-    @NamedQuery(name="findAllProductsPurchased",query="SELECT * FROM CART WHERE BOUGHT LIKE TRUE"),
-    @NamedQuery(name="findAllProductsNotPurchased",query="SELECT * FROM CART WHERE BOUGHT LIKE FALSE"),
-})*/
+    @NamedQuery(name = "findAllProductsBought", query = "SELECT c FROM Cart c WHERE c.bought = TRUE")
+    ,
+    @NamedQuery(name = "findAllProductsNotBought", query = "SELECT c FROM Cart c WHERE c.bought = FALSE")
+    ,
+    @NamedQuery(name = "findAllByArtist", query = "SELECT c FROM Cart c WHERE c.product.artist.name = :artistName")
+    ,
+    @NamedQuery(name = "CartFindBetweenDates", query = "SELECT c FROM Cart c WHERE c.orderDate BETWEEN :startDate AND :endDate ORDER BY c.orderDate ASC")
+})
 
 @Entity
 @Table(name = "cart", schema = "Fanetix")
