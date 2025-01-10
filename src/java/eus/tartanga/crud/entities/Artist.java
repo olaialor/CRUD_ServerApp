@@ -35,15 +35,20 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "artist", schema = "Fanetix")
 
 @NamedQueries({
-        @NamedQuery(
+    @NamedQuery(
             name = "ArtistFindBySearchTerm",
             query = "SELECT a FROM Artist a WHERE LOWER(a.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(a.company) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
-            //like ---mientra escribes
-    ),
+    )
+    ,
         @NamedQuery(
             name = "ArtistFindBetweenDates",
             query = "SELECT a FROM Artist a WHERE a.debut BETWEEN :startDate AND :endDate ORDER BY a.debut ASC" //between 2 dates
-            //native query , criteria query , stored procedure ??
+
+    )
+    ,
+        @NamedQuery(
+            name = "findAllArtist",
+            query = "SELECT a FROM Artist a"
     )
 
 })
@@ -144,7 +149,6 @@ public class Artist implements Serializable {
         this.concertList = concertList;
     }
 
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -170,6 +174,5 @@ public class Artist implements Serializable {
     public String toString() {
         return "eus.tartanga.crud.entities.Artist[ id=" + artistId + " ]";
     }
-
 
 }

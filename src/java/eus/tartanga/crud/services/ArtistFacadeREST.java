@@ -52,7 +52,7 @@ public class ArtistFacadeREST{
 
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
-    public void updateAccount(Artist artist) {
+    public void updateArtist(Artist artist) {
         try{
             LOGGER.log(Level.INFO,"Updating Artist {0}",artist.getArtistId());
             ejb.updateArtist(artist);
@@ -80,7 +80,7 @@ public class ArtistFacadeREST{
     @Produces(MediaType.APPLICATION_XML)
     public Artist findArtist(@PathParam("id") Integer id) {
         try{
-            LOGGER.log(Level.INFO,"Reading data for account {0}",id);
+            LOGGER.log(Level.INFO,"Reading data for artist {0}",id);
             return ejb.findArtist(id);
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
@@ -92,7 +92,7 @@ public class ArtistFacadeREST{
     @Produces(MediaType.APPLICATION_XML)
     public List<Artist> findAllArtist() {
        
-            LOGGER.log(Level.INFO,"Reading data for all accounts {0}");
+            LOGGER.log(Level.INFO,"Reading data for all artist {0}");
             return ejb.findAllArtist();
         
         
