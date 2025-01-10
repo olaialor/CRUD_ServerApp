@@ -17,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -31,6 +33,25 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "artist", schema = "Fanetix")
+
+@NamedQueries({
+    @NamedQuery(
+            name = "ArtistFindBySearchTerm",
+            query = "SELECT a FROM Artist a WHERE LOWER(a.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(a.company) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
+    )
+    ,
+        @NamedQuery(
+            name = "ArtistFindBetweenDates",
+            query = "SELECT a FROM Artist a WHERE a.debut BETWEEN :startDate AND :endDate ORDER BY a.debut ASC" //between 2 dates
+
+    )
+    ,
+        @NamedQuery(
+            name = "findAllArtist",
+            query = "SELECT a FROM Artist a"
+    )
+
+})
 @XmlRootElement
 public class Artist implements Serializable {
 

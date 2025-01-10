@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Irati
  */
+
 @NamedQueries({
     @NamedQuery(
             name = "ConcertComingSoon",

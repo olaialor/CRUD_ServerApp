@@ -5,8 +5,11 @@
  */
 package eus.tartanga.crud.services;
 
+import eus.tartanga.crud.ejb.EJBProductManager;
+import eus.tartanga.crud.ejb.ProductManagerLocal;
 import eus.tartanga.crud.entities.Product;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,54 +25,48 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Elbire
  */
-@Stateless
 @Path("eus.tartanga.crud.entities.product")
-public class ProductFacadeREST extends AbstractFacade<Product> {
+public class ProductFacadeREST{
 
-    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
-    private EntityManager em;
+    @EJB(name = "eus.tartanga.crud.ejb.EJBProductManager")
+    private ProductManagerLocal ejb;
 
-    public ProductFacadeREST() {
-        super(Product.class);
-    }
 
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Product entity) {
-        super.create(entity);
+        ejb.createProduct(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") Integer id, Product entity) {
-        super.edit(entity);
+        ejb.updateProduct(entity);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+        ejb.deleteProduct(id);
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Product find(@PathParam("id") Integer id) {
-        return super.find(id);
+        return ejb.findProductById(id);
     }
 
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Product> findAll() {
-        return super.findAll();
+        return ejb.findAllProducts();
     }
 
-    @GET
+    /**@GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Product> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
@@ -81,11 +78,46 @@ public class ProductFacadeREST extends AbstractFacade<Product> {
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
         return String.valueOf(super.count());
+    }**/
+
+    /**
+     * Método para buscar conciertos según un término de búsqueda.
+     *
+     * @param searchTerm El término de búsqueda (nombre, ciudad o ubicación).
+     * @return Lista de conciertos que coincidan con el término.
+     */
+    @GET
+    @Path("search/{searchTerm}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Product> searchByTerm(@PathParam("searchTerm") String searchTerm) {
+        return ejb.searchProductsByTerm(searchTerm);
     }
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
+    /**
+     * Método para buscar productos cuyo stock sea mayor a 0.
+     *
+     * @return Lista de conciertos futuros.
+     */
+    @GET
+    @Path("stock")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Product> findStock() {
+        return ejb.findProductsInStock();
+    }
+
+    /**
+     * Método para buscar productos que tengan una release date entre dos fechas
+     * específicas.
+     *
+     * @param startDate Fecha de inicio (YYYY-MM-DD).
+     * @param endDate Fecha de fin (YYYY-MM-DD).
+     * @return Lista de productos con realease date entre las fechas dadas.
+     */
+    @GET
+    @Path("betweenDates/{startDate}/{endDate}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Product> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+        return ejb.findProductsBetweenDates(startDate, endDate);
     }
 
 }
