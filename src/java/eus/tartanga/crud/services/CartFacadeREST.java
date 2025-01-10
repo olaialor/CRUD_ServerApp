@@ -5,15 +5,22 @@
  */
 package eus.tartanga.crud.services;
 
+import eus.tartanga.crud.ejb.CartManagerLocal;
 import eus.tartanga.crud.entities.Cart;
 import eus.tartanga.crud.entities.CartId;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
+import java.util.Date;
 import java.util.List;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -25,115 +32,127 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Meylin
  */
-@Stateless
 @Path("eus.tartanga.crud.entities.cart")
-public class CartFacadeREST extends AbstractFacade<Cart> {
+public class CartFacadeREST {
 
-    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
-    private EntityManager em;
+    @EJB(name = "eus.tartanga.crud.ejb.EJBCartManager")
+    private CartManagerLocal ejb;
+    private Logger LOGGER = Logger.getLogger(CartFacadeREST.class.getName());
 
-    public CartFacadeREST() {
-        super(Cart.class);
-    }
-
-    //Crear pasing the object
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Cart entity) {
-        super.create(entity);
+    @Consumes(MediaType.APPLICATION_XML)
+    public void addToCart(Cart cart) {
+        try {
+            LOGGER.log(Level.INFO, "Creating cart with ID: {0}", cart.getId());
+            ejb.addToCart(cart);
+        } catch (CreateException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
-    //Update pasing the object
     @PUT
     @Path("{email}/{productId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("email") String email, @PathParam("productId") Integer id, Cart entity) {
-        super.edit(entity);
+    public void updateCart(@PathParam("email") String email, @PathParam("productId") Integer productId, Cart cart) {
+        try {
+            CartId cartId = new CartId(productId, email);
+            LOGGER.log(Level.INFO, "Updating cart with ID: {0}", cartId);
+            cart.setId(cartId);
+            ejb.updateCart(cart);
+        } catch (UpdateException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
-    //Delete by id
     @DELETE
     @Path("{email}/{productId}")
-    public void remove(@PathParam("email") String email, @PathParam("productId") Integer id) {
-        CartId idCart = new CartId(id, email);
-        super.remove(super.find(idCart));
+    public void removeCart(@PathParam("email") String email, @PathParam("productId") Integer productId) {
+        try {
+            CartId cartId = new CartId(productId, email);
+            LOGGER.log(Level.INFO, "Deleting cart with ID: {0}", cartId);
+            Cart cart = new Cart();
+            cart.setId(cartId);
+            ejb.removeCart(cart);
+        } catch (DeleteException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
-    //Search by id
     @GET
     @Path("{email}/{productId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Cart find(@PathParam("email") String email, @PathParam("productId") Integer id) {
-        CartId idCart = new CartId(id, email);
-        return super.find(idCart);
+    public Cart findCart(@PathParam("email") String email, @PathParam("productId") Integer productId) {
+
+        LOGGER.log(Level.INFO, "Finding cart with email: {0} and productId: {1}", new Object[]{email, productId});
+        return ejb.findCart(email, productId);
+
     }
 
-    //Get all the products
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Cart> findAll() {
-        return super.findAll();
+    public List<Cart> findAllCartProducts() {
+        try {
+            LOGGER.log(Level.INFO, "Finding all cart products");
+            return ejb.findAllCartProducts();
+        } catch (ReadException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
-    //Get all products that have been bought
     @GET
     @Path("bought")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Cart> findAllProductsBought() {
-        return getEntityManager()
-                .createNamedQuery("findAllProductsBought", Cart.class)
-                .getResultList();
+    public List<Cart> findAllBoughtProducts() {
+        try {
+            LOGGER.log(Level.INFO, "Finding all bought products");
+            return ejb.findAllBoughtProducts();
+        } catch (ReadException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("notbought")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Cart> findAllProductsNotBought() {
-        return getEntityManager()
-                .createNamedQuery("findAllProductsNotBought", Cart.class)
-                .getResultList();
+    public List<Cart> findAllNotBoughtProducts() {
+        try {
+            LOGGER.log(Level.INFO, "Finding all not bought products");
+            return ejb.findAllNotBoughtProducts();
+        } catch (ReadException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @GET
     @Path("byArtist/{artistName}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Cart> findAllByArtist(@PathParam("artistName") String artistName) {
-        return getEntityManager()
-                .createNamedQuery("findAllByArtist", Cart.class)
-                .setParameter("artistName", artistName)
-                .getResultList();
+    public List<Cart> findByArtist(@PathParam("artistName") String artistName) {
+        try {
+            LOGGER.log(Level.INFO, "Finding all products by artist: {0}", artistName);
+            return ejb.findByArtist(artistName);
+        } catch (ReadException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
-    /**
-     * Método para buscar conciertos entre dos fechas específicas.
-     *
-     * @param startDate Fecha de inicio (YYYY-MM-DD).
-     * @param endDate Fecha de fin (YYYY-MM-DD).
-     * @return Lista de conciertos entre las fechas dadas.
-     */
     @GET
     @Path("betweenDates/{startDate}/{endDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Cart> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
-        return em.createNamedQuery("CartFindBetweenDates", Cart.class)
-                .setParameter("startDate", java.sql.Date.valueOf(startDate))
-                .setParameter("endDate", java.sql.Date.valueOf(endDate))
-                .getResultList();
-    }
+    public List<Cart> findBetweenDate(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+        try {
+            LOGGER.log(Level.INFO, "Finding products between dates: {0} and {1}");
 
-    //Count the products that are in the cart
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
+            return ejb.findBetweenDate(startDate, endDate);
+        } catch (ReadException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-
 }

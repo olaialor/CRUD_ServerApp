@@ -26,6 +26,8 @@ public interface CartManagerLocal {
     public void updateCart(Cart cart) throws UpdateException;
 
     public void removeCart(Cart cart)throws DeleteException;
+    
+    public Cart findCart(String email, Integer productId);
 
     public List<Cart> findAllCartProducts()throws ReadException;
 
@@ -35,5 +37,5 @@ public interface CartManagerLocal {
 
     public List<Cart> findByArtist(String artistName)throws ReadException;
 
-    public List<Cart> findBetweenDate(Date initialDate, Date finalDate)throws ReadException;
+    public List<Cart> findBetweenDate(String startDate, String endDate)throws ReadException;
 }

@@ -5,16 +5,15 @@
  */
 package eus.tartanga.crud.ejb;
 
-import eus.tartanga.crud.ejb.CartManagerLocal;
 import eus.tartanga.crud.entities.Cart;
+import eus.tartanga.crud.entities.CartId;
 import eus.tartanga.crud.exceptions.CreateException;
 import eus.tartanga.crud.exceptions.DeleteException;
 import eus.tartanga.crud.exceptions.ReadException;
 import eus.tartanga.crud.exceptions.UpdateException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,7 +25,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class EJBCartManager implements CartManagerLocal {
 
-    @PersistenceContext(unitName = "HibernateQueriesPU")
+    @PersistenceContext(unitName = "CRUDWeb_AplicationPU")
     private EntityManager em;
 
     /**
@@ -65,6 +64,18 @@ public class EJBCartManager implements CartManagerLocal {
     }
 
     @Override
+    public Cart findCart(String email, Integer productId) {
+
+        // Crea el ID compuesto
+        CartId cartId = new CartId(productId, email);
+
+        // Busca la entidad Cart con su clave primaria compuesta
+        Cart cart = em.find(Cart.class, cartId);
+
+        return cart;
+    }
+
+    @Override
     public List<Cart> findAllCartProducts() throws ReadException {
         List<Cart> carts;
         try {
@@ -99,12 +110,25 @@ public class EJBCartManager implements CartManagerLocal {
 
     @Override
     public List<Cart> findByArtist(String artistName) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        return em.createNamedQuery("findAllByArtist", Cart.class)
+                .setParameter("artistName", artistName) // Configuración correcta del parámetro
+                .getResultList();
+
     }
 
     @Override
-    public List<Cart> findBetweenDate(Date initialDate, Date finalDate) throws ReadException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Cart> findBetweenDate(String startDate, String endDate) throws ReadException {
+        List<Cart> carts;
+        try {
+            carts = em.createNamedQuery("CartFindBetweenDates").
+                    setParameter("startDate", java.sql.Date.valueOf(startDate)).
+                    setParameter("endDate", java.sql.Date.valueOf(endDate)).
+                    getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+        return carts;
     }
 
 }
