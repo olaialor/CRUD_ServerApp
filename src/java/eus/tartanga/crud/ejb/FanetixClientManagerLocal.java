@@ -6,6 +6,10 @@
 package eus.tartanga.crud.ejb;
 
 import eus.tartanga.crud.entities.FanetixClient;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,13 +20,15 @@ import javax.ejb.Local;
 @Local
 public interface FanetixClientManagerLocal {
 
-    public void createClient(FanetixClient client);
+    public void createClient(FanetixClient client) throws CreateException;
 
-    public void updateClient(FanetixClient client);
+    public void updateClient(FanetixClient client) throws UpdateException;
 
-    public void removeClient(FanetixClient client);
+    public void removeClient(FanetixClient client) throws DeleteException;
 
-    public FanetixClient findClient(String email);
+    public FanetixClient findClient(String email) throws ReadException;
 
-    public List<FanetixClient> findAllClients();
+    public List<FanetixClient> findAllClients() throws ReadException;
+
+    public FanetixClient signIn(String email, String passwd) throws ReadException;
 }

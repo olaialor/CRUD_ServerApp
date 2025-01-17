@@ -12,6 +12,10 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.InternalServerErrorException;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
 
 /**
  *
@@ -24,50 +28,50 @@ public class EJBAdministratorManager implements AdministratorManagerLocal {
     private EntityManager em;
 
     @Override
-    public void create(Administrator administrator) {
+    public void create(Administrator administrator) throws CreateException {
         try {
             em.persist(administrator);
         } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
+            throw new CreateException(e.getMessage());
         }
     }
 
     @Override
-    public void update(Administrator administrator) {
+    public void update(Administrator administrator) throws UpdateException{
         try {
             em.merge(administrator);
         } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
+            throw new UpdateException(e.getMessage());
         }
     }
 
     @Override
-    public void remove(Administrator administrator) {
+    public void remove(Administrator administrator) throws DeleteException{
         try {
             em.remove(administrator);
         } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
+            throw new DeleteException(e.getMessage());
         }
     }
 
     @Override
-    public Administrator find(String email) {
+    public Administrator find(String email) throws ReadException{
         Administrator administrator = null;
         try {
             administrator= em.find(Administrator.class, email);
         } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
         return administrator ;
     }
 
     @Override
-    public List<Administrator> findAll() {
+    public List<Administrator> findAll() throws ReadException{
         List<Administrator> administrator;
         try {
             administrator= em.createNamedQuery("findAll").getResultList();
         } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
         return administrator ;
     }  

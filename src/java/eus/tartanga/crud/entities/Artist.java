@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Olaia
  */
-
 @NamedQueries({
     @NamedQuery(
             name = "ArtistFindBySearchTerm",

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.List;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
-import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,7 +28,6 @@ import javax.validation.constraints.NotNull;
  *
  * @author Elbire
  */
-
 @NamedQueries({
     @NamedQuery(
             name = "findAllProducts",

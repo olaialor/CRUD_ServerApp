@@ -7,6 +7,10 @@ package eus.tartanga.crud.services;
 
 import eus.tartanga.crud.ejb.AdministratorManagerLocal;
 import eus.tartanga.crud.entities.Administrator;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,58 +39,63 @@ public class AdministratorFacadeREST {
 
     @POST
     @Consumes(MediaType.APPLICATION_XML)
-    public void create(Administrator administrator) {
+    public void create(Administrator administrator) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating Administrator{0}", administrator.getEmail());
             ejb.create(administrator);
-        } catch (Exception e) {
+        } catch (CreateException e) {
             LOGGER.severe(e.getMessage());
-            //throw new InternalServerErrorException(e.getMessage());
+            throw new CreateException(e.getMessage());
         }
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
-    public void update(Administrator administrator) {
+    public void update(Administrator administrator) throws UpdateException {
         try {
             LOGGER.log(Level.INFO, "Updating Administrator{0}", administrator.getEmail());
             ejb.update(administrator);
-        } catch (Exception e) {
+        } catch (UpdateException e) {
             LOGGER.severe(e.getMessage());
-            // throw new InternalServerErrorException(e.getMessage());
+            throw new UpdateException(e.getMessage());
         }
     }
 
     @DELETE
     @Path("{email}")
-    public void remove(@PathParam("email") String email) {
+    public void remove(@PathParam("email") String email) throws DeleteException, ReadException {
         try {
             LOGGER.log(Level.INFO, "Deleting Administrator{0}", email);
             ejb.remove(ejb.find(email));
-        } catch (Exception e) {
+        } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
-            // throw new InternalServerErrorException(e.getMessage());
+            throw new DeleteException(e.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(AdministratorFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @GET
     @Path("{email}")
     @Produces(MediaType.APPLICATION_XML)
-    public Administrator find(@PathParam("email") String email) {
+    public Administrator find(@PathParam("email") String email) throws ReadException {
         try {
-            LOGGER.log(Level.INFO, "Reading data for Administrator{0}", email);
             return ejb.find(email);
-        } catch (Exception e) {
-            LOGGER.severe(e.getMessage());
-            //  throw new InternalServerErrorException(e.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(AdministratorFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-       return ejb.find(email);
+        return ejb.find(email);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public List<Administrator> findAll() {
-        LOGGER.log(Level.INFO, "Reading data for all administrator{0}");
+    public List<Administrator> findAll() throws ReadException {
+        try {
+            LOGGER.log(Level.INFO, "Reading data for all administrator{0}");
+            return ejb.findAll();
+        } catch (ReadException ex) {
+            Logger.getLogger(AdministratorFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return ejb.findAll();
 
     }

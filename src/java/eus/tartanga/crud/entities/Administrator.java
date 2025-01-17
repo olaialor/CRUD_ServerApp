@@ -22,9 +22,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Meylin and Irati
  */
-
 @NamedQueries({
-    @NamedQuery(name = "findAll", query = "SELECT c FROM Administrator c")
+    @NamedQuery(
+            name = "findAll",
+            query = "SELECT c FROM Administrator c"
+    )
+    ,
+    
+     @NamedQuery(
+            name = "adminSignIn",
+            query = "SELECT c FROM Administrator c WHERE c.email = :email AND c.passwd = :passwd"
+    )
 })
 
 @Entity

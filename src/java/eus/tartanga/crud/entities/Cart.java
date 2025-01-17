@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @NamedQueries({
+    @NamedQuery(name = "findAllCartProducts", query = "SELECT c FROM Cart c")
+    ,    
     @NamedQuery(name = "findAllProductsBought", query = "SELECT c FROM Cart c WHERE c.bought = TRUE")
     ,
     @NamedQuery(name = "findAllProductsNotBought", query = "SELECT c FROM Cart c WHERE c.bought = FALSE")

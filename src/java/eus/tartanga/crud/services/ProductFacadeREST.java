@@ -5,14 +5,14 @@
  */
 package eus.tartanga.crud.services;
 
-import eus.tartanga.crud.ejb.EJBProductManager;
 import eus.tartanga.crud.ejb.ProductManagerLocal;
 import eus.tartanga.crud.entities.Product;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,58 +28,53 @@ import javax.ws.rs.core.MediaType;
  * @author Elbire
  */
 @Path("eus.tartanga.crud.entities.product")
-public class ProductFacadeREST{
+public class ProductFacadeREST {
 
     @EJB(name = "eus.tartanga.crud.ejb.EJBProductManager")
     private ProductManagerLocal ejb;
 
-
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Product entity) {
+    public void create(Product entity) throws CreateException {
         ejb.createProduct(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Product entity) {
+    public void edit(@PathParam("id") Integer id, Product entity) throws UpdateException {
         ejb.updateProduct(entity);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
+    public void remove(@PathParam("id") Integer id) throws DeleteException {
         ejb.deleteProduct(id);
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Product find(@PathParam("id") Integer id) {
+    public Product find(@PathParam("id") Integer id) throws ReadException {
         return ejb.findProductById(id);
     }
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Product> findAll() {
+    public List<Product> findAll() throws ReadException {
         return ejb.findAllProducts();
     }
 
-    /**@GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Product> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
-    }**/
-
+    /**
+     * @GET @Path("{from}/{to}")
+     * @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) public
+     * List<Product> findRange(@PathParam("from") Integer from, @PathParam("to")
+     * Integer to) { return super.findRange(new int[]{from, to}); }
+     * @GET
+     * @Path("count")
+     * @Produces(MediaType.TEXT_PLAIN) public String countREST() { return
+     * String.valueOf(super.count()); }*
+     */
     /**
      * Método para buscar conciertos según un término de búsqueda.
      *
@@ -89,7 +84,7 @@ public class ProductFacadeREST{
     @GET
     @Path("search/{searchTerm}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Product> searchByTerm(@PathParam("searchTerm") String searchTerm) {
+    public List<Product> searchByTerm(@PathParam("searchTerm") String searchTerm) throws ReadException {
         return ejb.searchProductsByTerm(searchTerm);
     }
 
@@ -101,7 +96,7 @@ public class ProductFacadeREST{
     @GET
     @Path("stock")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Product> findStock() {
+    public List<Product> findStock() throws ReadException {
         return ejb.findProductsInStock();
     }
 
@@ -116,7 +111,7 @@ public class ProductFacadeREST{
     @GET
     @Path("betweenDates/{startDate}/{endDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Product> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+    public List<Product> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) throws ReadException {
         return ejb.findProductsBetweenDates(startDate, endDate);
     }
 
