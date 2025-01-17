@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -79,6 +81,8 @@ public class Product implements Serializable {
     private float price;
     @NotNull
     private int stock;
+    @Lob
+    @Column(name="image",columnDefinition="BLOB")
     private byte[] image;
 
     public Integer getProductId() {
