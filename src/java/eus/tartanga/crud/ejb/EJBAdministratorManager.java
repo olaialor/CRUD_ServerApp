@@ -15,6 +15,7 @@ import eus.tartanga.crud.exceptions.CreateException;
 import eus.tartanga.crud.exceptions.DeleteException;
 import eus.tartanga.crud.exceptions.ReadException;
 import eus.tartanga.crud.exceptions.UpdateException;
+import javax.persistence.NoResultException;
 
 /**
  *
@@ -77,15 +78,16 @@ public class EJBAdministratorManager implements AdministratorManagerLocal {
 
     @Override
     public Administrator signIn(String email, String passwd) throws ReadException {
-        Administrator administrator = null;
         try {
-            administrator = (Administrator) em.createNamedQuery("adminSignIn")
+            return em.createNamedQuery("adminSignIn", Administrator.class)
                     .setParameter("email", email)
                     .setParameter("passwd", passwd)
                     .getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Devolver null si no se encuentra la entidad.
         } catch (Exception e) {
-            throw new ReadException(e.getMessage());
+            throw new ReadException("An error occurred during the sign-in process: " + e.getMessage());
         }
-        return administrator;
     }
+
 }

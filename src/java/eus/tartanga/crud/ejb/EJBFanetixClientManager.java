@@ -13,6 +13,7 @@ import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 /**
@@ -76,15 +77,17 @@ public class EJBFanetixClientManager implements FanetixClientManagerLocal {
 
     @Override
     public FanetixClient signIn(String email, String passwd) throws ReadException {
-        FanetixClient administrator = null;
+        FanetixClient fanetixClient = null;
         try {
-            administrator = (FanetixClient) em.createNamedQuery("clientSignIn")
+            fanetixClient = (FanetixClient) em.createNamedQuery("clientSignIn")
                     .setParameter("email", email)
                     .setParameter("passwd", passwd)
                     .getSingleResult();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
+            return null; // Devolver null si no se encuentra la entidad.
+        }  catch (Exception e) {
             throw new ReadException(e.getMessage());
         }
-        return administrator;
+        return fanetixClient;
     }
 }

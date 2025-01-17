@@ -103,4 +103,16 @@ public class FanetixClientFacadeREST {
         }
         return ejb.findAllClients();
     }
+    
+    @GET
+    @Path("signIn/{email}/{passwd}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public FanetixClient signIn(@PathParam("email") String email, @PathParam("passwd") String passwd) throws ReadException {
+        try {
+           return ejb.signIn(email, passwd);
+        } catch (ReadException e) {
+            LOGGER.severe("Error during sign-in process: " + e.getMessage());
+            throw new ReadException("Sign-in failed: " + e.getMessage());
+        }
+    }
 }
