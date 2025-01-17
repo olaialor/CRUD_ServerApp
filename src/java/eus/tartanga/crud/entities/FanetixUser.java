@@ -13,6 +13,7 @@ import javax.persistence.MappedSuperclass;
  *
  * @author Meylin
  */
+
 @MappedSuperclass
 public class FanetixUser implements Serializable {
 

@@ -20,7 +20,16 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Meylin and Irati
  */
 @NamedQueries({
-    @NamedQuery(name = "findAllClients", query = "SELECT c FROM FanetixClient c")
+    @NamedQuery(
+            name = "findAllClients", 
+            query = "SELECT c FROM FanetixClient c"
+    ),
+
+    @NamedQuery(
+            name = "clientSignIn", 
+            query = "SELECT c FROM FanetixClient c WHERE c.email = :email AND c.passwd = :passwd"
+    )
+
 })
 
 @Entity

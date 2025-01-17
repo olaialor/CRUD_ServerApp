@@ -34,18 +34,15 @@ import javax.validation.constraints.NotNull;
     @NamedQuery(
             name = "findAllProducts",
             query = "SELECT p FROM Product p"
-    )
-    ,
+    ),
         @NamedQuery(
             name = "ProductStock",
             query = "SELECT p FROM Product p WHERE p.stock >=1"
-    )
-    ,
+    ),
         @NamedQuery(
             name = "ProductFindBySearchTerm",
             query = "SELECT p FROM Product p WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(p.artist.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))"
-    )
-    ,
+    ),
         @NamedQuery(
             name = "ProductFindBetweenDates",
             query = "SELECT p FROM Product p WHERE p.releaseDate BETWEEN :startDate AND :endDate ORDER BY p.releaseDate ASC"

@@ -7,6 +7,10 @@ package eus.tartanga.crud.services;
 
 import eus.tartanga.crud.ejb.ConcertManagerLocal;
 import eus.tartanga.crud.entities.Concert;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,59 +39,65 @@ public class ConcertFacadeREST {
 
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void createConcert(Concert concert) {
+    public void createConcert(Concert concert) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating Concert{0}", concert.getConcertId());
             ejb.createConcert(concert);
-        } catch (Exception e) {
+        } catch (CreateException e) {
             LOGGER.severe(e.getMessage());
-            //throw new InternalServerErrorException(e.getMessage());
+            throw new CreateException(e.getMessage());
         }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void updateConcert(@PathParam("id") Integer id, Concert concert) {
+    public void updateConcert(@PathParam("id") Integer id, Concert concert) throws UpdateException {
         try {
             LOGGER.log(Level.INFO, "Updating Concert {0}", concert.getConcertId());
             ejb.updateConcert(concert);
-        } catch (Exception e) {
+        } catch (UpdateException e) {
             LOGGER.severe(e.getMessage());
-            //throw new InternalServerErrorException(e.getMessage());
+            throw new UpdateException(e.getMessage());
         }
     }
 
     @DELETE
     @Path("{id}")
-    public void removeConcert(@PathParam("id") Integer id) {
+    public void removeConcert(@PathParam("id") Integer id) throws DeleteException {
         try {
             LOGGER.log(Level.INFO, "Deleting Concert {0}", id);
             ejb.removeConcert(ejb.findConcert(id));
-        } catch (Exception e) {
+        } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
-            // throw new InternalServerErrorException(e.getMessage());
+            throw new DeleteException(e.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(ConcertFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Concert findConcert(@PathParam("id") Integer id) {
+    public Concert findConcert(@PathParam("id") Integer id) throws ReadException {
         try {
             LOGGER.log(Level.INFO, "Reading data for concert {0}", id);
             return ejb.findConcert(id);
-        } catch (Exception e) {
+        } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            // throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
-        return ejb.findConcert(id);
     }
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Concert> findAllConcerts() {
-        LOGGER.log(Level.INFO, "Reading data for all concerts {0}");
+    public List<Concert> findAllConcerts() throws ReadException {
+        try {
+            LOGGER.log(Level.INFO, "Reading data for all concerts {0}");
+            return ejb.findAllConcerts();
+        } catch (ReadException ex) {
+            Logger.getLogger(ConcertFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return ejb.findAllConcerts();
 
     }
@@ -98,14 +108,13 @@ public class ConcertFacadeREST {
     @GET
     @Path("search/{searchTerm}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Concert> searchByTerm(@PathParam("searchTerm") String searchTerm) {
+    public List<Concert> searchByTerm(@PathParam("searchTerm") String searchTerm) throws ReadException {
         try {
             return ejb.searchByTerm(searchTerm);
-        } catch (Exception e) {
+        } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            // throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
-        return ejb.searchByTerm(searchTerm);
     }
 
     /**
@@ -113,14 +122,13 @@ public class ConcertFacadeREST {
     @GET
     @Path("comingSoon")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Concert> findComingSoon() {
+    public List<Concert> findComingSoon() throws ReadException {
         try {
             return ejb.findComingSoon();
-        } catch (Exception e) {
+        } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            // throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
-        return ejb.findComingSoon();
     }
 
     /**
@@ -129,13 +137,12 @@ public class ConcertFacadeREST {
     @GET
     @Path("betweenDates/{startDate}/{endDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Concert> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+    public List<Concert> findBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) throws ReadException {
         try {
             return ejb.findBetweenDates(startDate, endDate);
-        } catch (Exception e) {
+        } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            // throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
-        return ejb.findBetweenDates(startDate, endDate);
     }
 }

@@ -6,7 +6,10 @@ package eus.tartanga.crud.ejb;
  * and open the template in the editor.
  */
 import eus.tartanga.crud.entities.Administrator;
-import java.util.Date;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,14 +20,15 @@ import javax.ejb.Local;
 @Local
 public interface AdministratorManagerLocal {
 
-    public void create(Administrator administrator);
+    public void create(Administrator administrator) throws CreateException;
 
-    public void update(Administrator administrator);
+    public void update(Administrator administrator) throws UpdateException;
 
-    public void remove(Administrator administrator);
+    public void remove(Administrator administrator) throws DeleteException;
 
-    public Administrator find(String email);
+    public Administrator find(String email) throws ReadException;
 
-    public List<Administrator> findAll();
+    public List<Administrator> findAll() throws ReadException;
+
+    public Administrator signIn(String email, String passwd) throws ReadException;
 }
-
