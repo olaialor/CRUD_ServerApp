@@ -5,7 +5,6 @@ package eus.tartanga.crud.ejb;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import eus.tartanga.crud.entities.Administrator;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -37,7 +36,7 @@ public class EJBAdministratorManager implements AdministratorManagerLocal {
     }
 
     @Override
-    public void update(Administrator administrator) throws UpdateException{
+    public void update(Administrator administrator) throws UpdateException {
         try {
             em.merge(administrator);
         } catch (Exception e) {
@@ -46,7 +45,7 @@ public class EJBAdministratorManager implements AdministratorManagerLocal {
     }
 
     @Override
-    public void remove(Administrator administrator) throws DeleteException{
+    public void remove(Administrator administrator) throws DeleteException {
         try {
             em.remove(administrator);
         } catch (Exception e) {
@@ -55,25 +54,38 @@ public class EJBAdministratorManager implements AdministratorManagerLocal {
     }
 
     @Override
-    public Administrator find(String email) throws ReadException{
+    public Administrator find(String email) throws ReadException {
         Administrator administrator = null;
         try {
-            administrator= em.find(Administrator.class, email);
+            administrator = em.find(Administrator.class, email);
         } catch (Exception e) {
             throw new ReadException(e.getMessage());
         }
-        return administrator ;
+        return administrator;
     }
 
     @Override
-    public List<Administrator> findAll() throws ReadException{
+    public List<Administrator> findAll() throws ReadException {
         List<Administrator> administrator;
         try {
-            administrator= em.createNamedQuery("findAll").getResultList();
+            administrator = em.createNamedQuery("findAll").getResultList();
         } catch (Exception e) {
             throw new ReadException(e.getMessage());
         }
-        return administrator ;
-    }  
-}
+        return administrator;
+    }
 
+    @Override
+    public Administrator signIn(String email, String passwd) throws ReadException {
+        Administrator administrator = null;
+        try {
+            administrator = (Administrator) em.createNamedQuery("adminSignIn")
+                    .setParameter("email", email)
+                    .setParameter("passwd", passwd)
+                    .getSingleResult();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+        return administrator;
+    }
+}

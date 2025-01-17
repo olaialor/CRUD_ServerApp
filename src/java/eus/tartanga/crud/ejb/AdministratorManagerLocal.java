@@ -29,5 +29,7 @@ public interface AdministratorManagerLocal {
     public Administrator find(String email) throws ReadException;
 
     public List<Administrator> findAll() throws ReadException;
+    
+     public Administrator signIn(String email, String passwd) throws ReadException;
 }
 
