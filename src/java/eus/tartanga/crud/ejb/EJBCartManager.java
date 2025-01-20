@@ -52,7 +52,7 @@ public class EJBCartManager implements CartManagerLocal {
      * Adds a new product to the cart.
      *
      * @param cart the Cart entity to add.
-     * @throws CreateException if there is an error during the creation process.
+     * @throws UpdateException if there is an error during the update process.
      */
     @Override
     public void updateCart(Cart cart) throws UpdateException {

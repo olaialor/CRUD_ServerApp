@@ -7,7 +7,6 @@ import eus.tartanga.crud.exceptions.ReadException;
 import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import javax.ejb.Local;
-import javax.persistence.NoResultException;
 
 /**
  * Local interface for managing Administrator entities in the system. Provides

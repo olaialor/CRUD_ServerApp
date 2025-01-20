@@ -21,7 +21,7 @@ import javax.persistence.TypedQuery;
  * Administrator entities. It interacts with the database through JPA.
  * </p>
  *
- * @author 2dam
+ * @author Irati,Meylin,Olaia,Elbire
  */
 @Stateless
 public class EJBAdministratorManager implements AdministratorManagerLocal {
