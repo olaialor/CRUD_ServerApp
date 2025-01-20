@@ -1,5 +1,6 @@
 package eus.tartanga.crud.ejb;
 
+import eus.tartanga.crud.entities.Cart;
 import eus.tartanga.crud.entities.FanetixClient;
 import eus.tartanga.crud.exceptions.CreateException;
 import eus.tartanga.crud.exceptions.DeleteException;
@@ -193,4 +194,42 @@ public class EJBFanetixClientManager implements FanetixClientManagerLocal {
             throw new ReadException("Unexpected error while signing in client." + e.getMessage());
         }
     }
+        /**
+     * Removes a FanetixClient and its associated carts from the database.
+     * <p>
+     * This method removes the specified FanetixClient and all associated 
+     * Cart entities. In case of an error, a {@link DeleteException} is thrown.
+     * </p>
+     *
+     * @param clientId The ID of the client to be removed.
+     * @throws DeleteException If an error occurs during the removal process.
+     */
+    
+    public void removeClientWithCarts(Long clientId) throws DeleteException {
+        try {
+            // Buscar el cliente por ID
+            FanetixClient client = em.find(FanetixClient.class, clientId);
+
+            if (client != null) {
+                // Eliminar los carritos asociados al cliente
+                for (Cart carrito : client.getProducts()) {
+                    em.remove(em.contains(carrito) ? carrito : em.merge(carrito));
+                    LOGGER.log(Level.INFO, "Cart removed: {0}", carrito);
+                }
+
+                // Ahora eliminar el cliente
+                em.remove(em.contains(client) ? client : em.merge(client));
+                LOGGER.log(Level.INFO, "Client removed: {0}", client);
+            } else {
+                LOGGER.log(Level.WARNING, "Client with ID {0} not found", clientId);
+            }
+        } catch (PersistenceException e) {
+            LOGGER.log(Level.SEVERE, "Persistence error removing client and carts: {0}", e.getMessage());
+            throw new DeleteException("Error removing client and carts: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Unexpected error removing client and carts: {0}", e.getMessage());
+            throw new DeleteException("Unexpected error while removing client and carts." + e.getMessage());
+        }
+    }
+
 }

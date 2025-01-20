@@ -20,9 +20,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
+ * RESTful service for managing products in the system. This service provides
+ * methods to create, update, delete, retrieve individual or all products,
+ * search products by a search term, find products in stock, and retrieve
+ * products within a date range.
+ *
+ * It communicates with the underlying product management service via an
+ * injected EJB. The responses are returned as either XML or JSON, depending on
+ * the client request.
  *
  * @author Elbire
  */
@@ -33,6 +40,13 @@ public class ProductFacadeREST {
     private ProductManagerLocal ejb;
     private Logger LOGGER = Logger.getLogger(ProductFacadeREST.class.getName());
 
+    /**
+     * Creates a new product in the system.
+     *
+     * @param product The product entity to be created.
+     * @throws InternalServerErrorException if an error occurs while creating
+     * the product.
+     */
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Product product) {
@@ -45,6 +59,14 @@ public class ProductFacadeREST {
         }
     }
 
+    /**
+     * Updates an existing product in the system.
+     *
+     * @param id The ID of the product to be updated.
+     * @param product The updated product entity.
+     * @throws InternalServerErrorException if an error occurs while updating
+     * the product.
+     */
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -59,6 +81,13 @@ public class ProductFacadeREST {
         }
     }
 
+    /**
+     * Deletes a product from the system.
+     *
+     * @param id The ID of the product to be deleted.
+     * @throws InternalServerErrorException if an error occurs while deleting
+     * the product.
+     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
@@ -79,6 +108,15 @@ public class ProductFacadeREST {
         }
     }
 
+    /**
+     * Finds a product by its ID.
+     *
+     * @param id The ID of the product to be retrieved.
+     * @return The product corresponding to the given ID.
+     * @throws InternalServerErrorException if an error occurs while retrieving
+     * the product.
+     */
+
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -92,6 +130,13 @@ public class ProductFacadeREST {
         }
     }
 
+    /**
+     * Retrieves all products in the system.
+     *
+     * @return A list of all products.
+     * @throws InternalServerErrorException if an error occurs while retrieving
+     * the products.
+     */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Product> findAll() throws ReadException {
@@ -105,10 +150,13 @@ public class ProductFacadeREST {
     }
 
     /**
-     * Método para buscar conciertos según un término de búsqueda.
+     * Searches for products by a specific search term (e.g., name, city, or
+     * location).
      *
-     * @param searchTerm El término de búsqueda (nombre, ciudad o ubicación).
-     * @return Lista de conciertos que coincidan con el término.
+     * @param searchTerm The search term to find matching products.
+     * @return A list of products that match the search term.
+     * @throws InternalServerErrorException if an error occurs while searching
+     * for products.
      */
     @GET
     @Path("search/{searchTerm}")
@@ -124,9 +172,12 @@ public class ProductFacadeREST {
     }
 
     /**
-     * Método para buscar productos cuyo stock sea mayor a 0.
+     * Retrieves products that are currently in stock (i.e., have a stock
+     * greater than 0).
      *
-     * @return Lista de conciertos futuros.
+     * @return A list of products in stock.
+     * @throws InternalServerErrorException if an error occurs while retrieving
+     * products in stock.
      */
     @GET
     @Path("stock")
@@ -142,12 +193,14 @@ public class ProductFacadeREST {
     }
 
     /**
-     * Método para buscar productos que tengan una release date entre dos fechas
-     * específicas.
+     * Retrieves products with a release date between two specified dates.
      *
-     * @param startDate Fecha de inicio (YYYY-MM-DD).
-     * @param endDate Fecha de fin (YYYY-MM-DD).
-     * @return Lista de productos con realease date entre las fechas dadas.
+     * @param startDate The start date (YYYY-MM-DD).
+     * @param endDate The end date (YYYY-MM-DD).
+     * @return A list of products with release dates between the specified
+     * range.
+     * @throws InternalServerErrorException if an error occurs while retrieving
+     * the products between dates.
      */
     @GET
     @Path("betweenDates/{startDate}/{endDate}")

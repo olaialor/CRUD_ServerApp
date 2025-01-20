@@ -67,4 +67,5 @@ public interface FanetixClientManagerLocal {
      * @throws ReadException If an error occurs during authentication.
      */
     public FanetixClient signIn(String email, String passwd) throws ReadException;
+
 }

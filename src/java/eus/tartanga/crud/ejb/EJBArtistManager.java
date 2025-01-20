@@ -1,5 +1,6 @@
 package eus.tartanga.crud.ejb;
 
+import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import eus.tartanga.crud.entities.Artist;
 import eus.tartanga.crud.exceptions.CreateException;
 import eus.tartanga.crud.exceptions.DeleteException;
@@ -11,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.PersistenceException;
 
 /**
  * EJB responsible for managing CRUD operations for the Artist entity. Provides
@@ -56,11 +58,17 @@ public class EJBArtistManager implements ArtistManagerLocal {
     @Override
     public void updateArtist(Artist artist) throws UpdateException {
         try {
-            em.merge(artist);
+            if(!em.contains(artist)){
+                em.merge(artist);
+            }
+            em.flush();
             logger.log(Level.INFO, "Artist updated successfully: {0}", artist);
+        } catch (PersistenceException e) {
+            LOGGER.log(Level.SEVERE, "Error updating cart: " + e.getMessage(), e);
+            throw new UpdateException("Error while updating the cart: " + e.getMessage());
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error updating artist: " + artist, e);
-            throw new UpdateException("Error updating artist: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Unexpected error while updating the cart: {0}", e.getMessage());
+            throw new UpdateException("Unexpected error while updating the cart: " + e.getMessage());
         }
     }
 

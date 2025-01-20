@@ -11,22 +11,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import eus.tartanga.crud.ejb.AdministratorManagerLocal;
 import eus.tartanga.crud.entities.Administrator;
-import eus.tartanga.crud.entities.Product;
 import eus.tartanga.crud.exceptions.CreateException;
 import eus.tartanga.crud.exceptions.DeleteException;
 import eus.tartanga.crud.exceptions.ReadException;
 import eus.tartanga.crud.exceptions.UpdateException;
 import javax.ejb.EJB;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 
 /**
+ * RESTful Web Service for managing Administrator entities. Provides endpoints
+ * to create, update, delete, find, and list administrators. Also includes an
+ * endpoint for administrator sign-in.
  *
- * @author Irati,Meylin
+ * @author Irati, Meylin
  */
 @Path("eus.tartanga.crud.entities.administrator")
 public class AdministratorFacadeREST {
@@ -36,6 +36,12 @@ public class AdministratorFacadeREST {
 
     private Logger LOGGER = Logger.getLogger(AdministratorFacadeREST.class.getName());
 
+    /**
+     * Creates a new Administrator.
+     *
+     * @param administrator The Administrator object to be created.
+     * @throws WebApplicationException If an error occurs during creation.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public void create(Administrator administrator) {
@@ -48,6 +54,12 @@ public class AdministratorFacadeREST {
         }
     }
 
+    /**
+     * Updates an existing Administrator based on the provided email.
+     *
+     * @param administrator The Administrator object with updated details.
+     * @throws WebApplicationException If an error occurs during the update.
+     */
     @PUT
     @Path("{email}")
     @Consumes(MediaType.APPLICATION_XML)
@@ -60,35 +72,39 @@ public class AdministratorFacadeREST {
             throw new WebApplicationException("Error updating administrator", 400);
         }
     }
-    
-   @DELETE
-@Path("{email}")
-public void remove(@PathParam("email") String email) {
-    try {
-        LOGGER.log(Level.INFO, "Attempting to delete Administrator: {0}", email);
-        Administrator admin = ejb.find(email);
-        
-        if (admin == null) {
-            LOGGER.log(Level.WARNING, "Administrator not found with email: {0}", email);
+
+    /**
+     * Deletes an Administrator by email.
+     *
+     * @param email The email of the Administrator to be deleted.
+     * @throws WebApplicationException If an error occurs during deletion or if
+     * the Administrator is not found.
+     */
+    @DELETE
+    @Path("{email}")
+    public void remove(@PathParam("email") String email) {
+        try {
+            LOGGER.log(Level.INFO, "Attempting to delete Administrator: {0}", email);
+            ejb.remove(ejb.find(email));
+            LOGGER.log(Level.INFO, "Administrator {0} deleted successfully", email);
+
+        } catch (DeleteException e) {
+            LOGGER.log(Level.SEVERE, "Error deleting administrator: {0}", e.getMessage());
+            throw new WebApplicationException("Error deleting administrator", 500);
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error retrieving administrator during deletion: {0}", e.getMessage());
             throw new WebApplicationException("Administrator not found", 404);
-        }else{
-        
-        // Confirmar que el administrador ha sido encontrado
-        LOGGER.log(Level.INFO, "Administrator {0} found, proceeding with deletion", email);
-        ejb.remove(admin);
-        // Confirmar eliminación
-        LOGGER.log(Level.INFO, "Administrator {0} deleted successfully", email);
         }
-    } catch (DeleteException e) {
-        LOGGER.log(Level.SEVERE, "Error deleting administrator: {0}", e.getMessage());
-        throw new WebApplicationException("Error deleting administrator", 500);
-    } catch (ReadException e) {
-        LOGGER.log(Level.SEVERE, "Error retrieving administrator during deletion: {0}", e.getMessage());
-        throw new WebApplicationException("Administrator not found", 404);
     }
-}
 
-
+    /**
+     * Finds an Administrator by email.
+     *
+     * @param email The email of the Administrator to find.
+     * @return The Administrator with the specified email.
+     * @throws WebApplicationException If an error occurs during retrieval or if
+     * the Administrator is not found.
+     */
     @GET
     @Path("{email}")
     @Produces(MediaType.APPLICATION_XML)
@@ -106,6 +122,12 @@ public void remove(@PathParam("email") String email) {
         }
     }
 
+    /**
+     * Fetches all administrators.
+     *
+     * @return A list of all Administrators.
+     * @throws WebApplicationException If an error occurs during retrieval.
+     */
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public List<Administrator> findAll() {
@@ -118,6 +140,15 @@ public void remove(@PathParam("email") String email) {
         }
     }
 
+    /**
+     * Signs in an Administrator using email and password.
+     *
+     * @param email The email of the Administrator.
+     * @param passwd The password of the Administrator.
+     * @return The signed-in Administrator.
+     * @throws WebApplicationException If the sign-in fails (e.g., invalid
+     * credentials).
+     */
     @GET
     @Path("signIn/{email}/{passwd}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

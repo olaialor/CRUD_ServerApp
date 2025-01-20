@@ -22,6 +22,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 /**
+ * RESTful Web Service for managing Artist entities. Provides CRUD operations
+ * for artists: create, update, delete, and retrieve. Also allows searching
+ * artists by search term and by debut dates.
  *
  * @author Olaia
  */
@@ -33,6 +36,13 @@ public class ArtistFacadeREST {
 
     private Logger LOGGER = Logger.getLogger(ArtistFacadeREST.class.getName());
 
+    /**
+     * Creates a new artist.
+     *
+     * @param artist The artist entity to be created.
+     * @throws WebApplicationException if an error occurs during the creation
+     * process.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public void createArtist(Artist artist) {
@@ -45,6 +55,13 @@ public class ArtistFacadeREST {
         }
     }
 
+    /**
+     * Updates an existing artist.
+     *
+     * @param artist The artist entity to be updated.
+     * @throws WebApplicationException if an error occurs during the update
+     * process.
+     */
     @PUT
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_XML)
@@ -52,22 +69,26 @@ public class ArtistFacadeREST {
         try {
             LOGGER.log(Level.INFO, "Updating Artist {0}", artist.getArtistId());
             ejb.updateArtist(artist);
+            LOGGER.log(Level.INFO, "Artist {0} updated successfully", artist.getArtistId());
         } catch (UpdateException e) {
             LOGGER.log(Level.SEVERE, "Error updating artist: {0}", e.getMessage());
             throw new WebApplicationException("Error updating artist", 400);
         }
     }
 
+    /**
+     * Deletes an artist by their ID.
+     *
+     * @param id The ID of the artist to be deleted.
+     * @throws WebApplicationException if an error occurs during the deletion
+     * process.
+     */
     @DELETE
     @Path("{id}")
     public void removeArtist(@PathParam("id") Integer id) {
         try {
             LOGGER.log(Level.INFO, "Deleting Artist {0}", id);
-            Artist artist = ejb.findArtist(id);
-            if (artist == null) {
-                throw new WebApplicationException("Artist not found", 404);
-            }
-            ejb.removeArtist(artist);
+            ejb.removeArtist(ejb.findArtist(id));
         } catch (DeleteException e) {
             LOGGER.log(Level.SEVERE, "Error deleting artist: {0}", e.getMessage());
             throw new WebApplicationException("Error deleting artist", 500);
@@ -77,6 +98,15 @@ public class ArtistFacadeREST {
         }
     }
 
+    /**
+     * Finds an artist by their ID.
+     *
+     * @param id The ID of the artist to be found.
+     * @return The artist entity, or throws a WebApplicationException if not
+     * found.
+     * @throws WebApplicationException if an error occurs during the search
+     * process.
+     */
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_XML)
@@ -94,6 +124,13 @@ public class ArtistFacadeREST {
         }
     }
 
+    /**
+     * Retrieves a list of all artists.
+     *
+     * @return A list of all artist entities.
+     * @throws WebApplicationException if an error occurs during the fetch
+     * process.
+     */
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public List<Artist> findAllArtist() {
@@ -108,10 +145,12 @@ public class ArtistFacadeREST {
     }
 
     /**
-     * Método para buscar artistas según un término de búsqueda.
+     * Searches for artists by a search term (e.g., name or company).
      *
-     * @param searchTerm El término de búsqueda (nombre o compañía.).
-     * @return Lista de artistas que coincidan con el término.
+     * @param searchTerm The search term to use for filtering artists.
+     * @return A list of artists matching the search term.
+     * @throws WebApplicationException if an error occurs during the search
+     * process.
      */
     @GET
     @Path("search/{searchTerm}")
@@ -127,11 +166,13 @@ public class ArtistFacadeREST {
     }
 
     /**
-     * Método para buscar debut de artistas entre dos fechas específicas.
+     * Finds artists who debuted between two specific dates.
      *
-     * @param startDate Fecha de inicio (YYYY-MM-DD).
-     * @param endDate Fecha de fin (YYYY-MM-DD).
-     * @return Lista de artistas entre las fechas dadas.
+     * @param startDate The start date in YYYY-MM-DD format.
+     * @param endDate The end date in YYYY-MM-DD format.
+     * @return A list of artists who debuted within the date range.
+     * @throws WebApplicationException if an error occurs during the search
+     * process.
      */
     @GET
     @Path("betweenDates/{startDate}/{endDate}")
