@@ -7,7 +7,7 @@ package eus.tartanga.crud.exceptions;
 
 /**
  *
- * @author 2dam
+ * @author Elbire
  */
 public class ReadException extends Exception {
 

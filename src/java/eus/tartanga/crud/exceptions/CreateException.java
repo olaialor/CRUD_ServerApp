@@ -7,7 +7,7 @@ package eus.tartanga.crud.exceptions;
 
 /**
  *
- * @author 2dam
+ * @author Meylin
  */
 public class CreateException extends Exception {
 

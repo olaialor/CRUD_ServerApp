@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eus.tartanga.crud.services;
 
 import javax.ws.rs.Consumes;
@@ -28,7 +23,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author 2dam
+ * @author Irati,Meylin
  */
 @Path("eus.tartanga.crud.entities.administrator")
 public class AdministratorFacadeREST {
@@ -95,7 +90,7 @@ public class AdministratorFacadeREST {
             }
             return Response.status(Response.Status.OK).entity(admin).build();
         } catch (ReadException ex) {
-            LOGGER.severe("Error finding administrator: " + ex.getMessage());
+            LOGGER.log(Level.SEVERE, "Error finding administrator: {0}", ex.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error finding administrator").build();
         }
     }
@@ -120,7 +115,7 @@ public class AdministratorFacadeREST {
         try {
             return ejb.signIn(email, passwd);
         } catch (ReadException e) {
-            LOGGER.severe("Error during sign-in process: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error during sign-in process: {0}", e.getMessage());
             throw new ReadException("Sign-in failed: " + e.getMessage());
         }
     }

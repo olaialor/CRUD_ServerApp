@@ -7,7 +7,7 @@ package eus.tartanga.crud.exceptions;
 
 /**
  *
- * @author 2dam
+ * @author Irati
  */
 public class SignInErrorException extends Exception {
 

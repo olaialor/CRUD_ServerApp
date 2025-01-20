@@ -7,7 +7,7 @@ package eus.tartanga.crud.exceptions;
 
 /**
  *
- * @author 2dam
+ * @author Olaia
  */
 public class UserExistErrorException extends Exception {
 
