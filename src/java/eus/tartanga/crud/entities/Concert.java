@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -70,7 +71,7 @@ public class Concert implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer concertId;
-
+    @Lob
     private byte[] billboard;
 
     @NotNull(message = "concertName.required")

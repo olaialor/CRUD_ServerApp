@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eus.tartanga.crud.services;
 
 import eus.tartanga.crud.ejb.FanetixClientManagerLocal;
@@ -21,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -42,53 +38,60 @@ public class FanetixClientFacadeREST {
 
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void createClient(FanetixClient client) throws CreateException {
+    public void createClient(FanetixClient client) {
         try {
-            LOGGER.log(Level.INFO, "Creating Client{0}", client.getEmail());
+            LOGGER.log(Level.INFO, "Creating client with ID: {0}", client.getEmail());
             ejb.createClient(client);
         } catch (CreateException e) {
             LOGGER.severe(e.getMessage());
-            throw new CreateException(e.getMessage());
+            throw new InternalServerErrorException("Error creating client: " + e.getMessage());
         }
     }
 
     @PUT
     @Path("{email}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void updateClient(@PathParam("email") String email, FanetixClient client) throws UpdateException {
+    public void updateClient(@PathParam("email") String email, FanetixClient client)  {
         try {
-            LOGGER.log(Level.INFO, "Updating Client {0}", client.getEmail());
+            LOGGER.log(Level.INFO, "Updating client with ID: {0}", email);
+            client.setEmail(email);
             ejb.updateClient(client);
         } catch (UpdateException e) {
             LOGGER.severe(e.getMessage());
-            throw new UpdateException(e.getMessage());
+            throw new InternalServerErrorException("Error updating client: " + e.getMessage());
         }
     }
 
     @DELETE
     @Path("{email}")
-    public void removeClient(@PathParam("email") String email) throws DeleteException {
-        try {
-            LOGGER.log(Level.INFO, "Deleting Client {0}", email);
-            ejb.removeClient(ejb.findClient(email));
+    public void removeClient(@PathParam("email") String email)  {
+         try {
+            LOGGER.log(Level.INFO, "Deleting client with email: {0}", email);
+            FanetixClient client = ejb.findClient(email);
+            if (client != null) {
+                ejb.removeClient(client);
+            } else {
+                throw new DeleteException("Client with email " + email + " not found");
+            }
         } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
-            throw new DeleteException(e.getMessage());
-        } catch (ReadException ex) {
-            Logger.getLogger(FanetixClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            throw new InternalServerErrorException("Error deleting client: " + e.getMessage());
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error reading client data: {0}", e.getMessage());
+            throw new InternalServerErrorException("Error retrieving client: " + e.getMessage());
         }
     }
 
     @GET
     @Path("{email}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public FanetixClient findClient(@PathParam("email") String email) throws ReadException {
+    public FanetixClient findClient(@PathParam("email") String email)  {
         try {
-            LOGGER.log(Level.INFO, "Reading data for client {0}", email);
+            LOGGER.log(Level.INFO, "Reading data for client with email: {0}", email);
             return ejb.findClient(email);
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            throw new ReadException(e.getMessage());
+            throw new InternalServerErrorException("Error finding client: " + e.getMessage());
         }
     }
 
@@ -96,23 +99,24 @@ public class FanetixClientFacadeREST {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FanetixClient> findAllClients() throws ReadException {
         try {
-            LOGGER.log(Level.INFO, "Reading data for all clients {0}");
+            LOGGER.log(Level.INFO, "Reading data for all clients");
             return ejb.findAllClients();
-        } catch (ReadException ex) {
-            Logger.getLogger(FanetixClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ReadException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException("Error retrieving all clients: " + e.getMessage());
         }
-        return ejb.findAllClients();
     }
     
     @GET
     @Path("signIn/{email}/{passwd}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public FanetixClient signIn(@PathParam("email") String email, @PathParam("passwd") String passwd) throws ReadException {
+    public FanetixClient signIn(@PathParam("email") String email, @PathParam("passwd") String passwd)  {
         try {
-           return ejb.signIn(email, passwd);
+            LOGGER.log(Level.INFO, "Signing in client with email: {0}", email);
+            return ejb.signIn(email, passwd);
         } catch (ReadException e) {
-            LOGGER.severe("Error during sign-in process: " + e.getMessage());
-            throw new ReadException("Sign-in failed: " + e.getMessage());
+            LOGGER.severe("Error during sign-in process for email " + email + ": " + e.getMessage());
+            throw new InternalServerErrorException("Sign-in failed: " + e.getMessage());
         }
     }
 }

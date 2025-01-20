@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -76,6 +77,7 @@ public class Artist implements Serializable {
     /**
      * The image of the artist, stored as a byte array.
      */
+    @Lob
     private byte[] image;
 
     /**

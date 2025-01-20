@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eus.tartanga.crud.services;
 
 import eus.tartanga.crud.ejb.CartManagerLocal;
@@ -12,7 +7,6 @@ import eus.tartanga.crud.exceptions.CreateException;
 import eus.tartanga.crud.exceptions.DeleteException;
 import eus.tartanga.crud.exceptions.ReadException;
 import eus.tartanga.crud.exceptions.UpdateException;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +41,7 @@ public class CartFacadeREST {
             ejb.addToCart(cart);
         } catch (CreateException e) {
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException("Error creating cart: " + e.getMessage());
         }
     }
 
@@ -62,7 +56,7 @@ public class CartFacadeREST {
             ejb.updateCart(cart);
         } catch (UpdateException e) {
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException("Error updating cart: " + e.getMessage());
         }
     }
 
@@ -77,17 +71,21 @@ public class CartFacadeREST {
             ejb.removeCart(cart);
         } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException("Error deleting cart: " + e.getMessage());
         }
     }
 
     @GET
     @Path("{email}/{productId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Cart findCart(@PathParam("email") String email, @PathParam("productId") Integer productId) throws ReadException {
-
-        LOGGER.log(Level.INFO, "Finding cart with email: {0} and productId: {1}", new Object[]{email, productId});
-        return ejb.findCart(email, productId);
+    public Cart findCart(@PathParam("email") String email, @PathParam("productId") Integer productId) {
+        try {
+            LOGGER.log(Level.INFO, "Finding cart with email: {0} and productId: {1}", new Object[]{email, productId});
+            return ejb.findCart(email, productId);
+        } catch (ReadException e) {
+            LOGGER.severe(e.getMessage());
+            throw new InternalServerErrorException("Error finding cart: " + e.getMessage());
+        }
     }
 
     @GET
@@ -98,7 +96,7 @@ public class CartFacadeREST {
             return ejb.findAllCartProducts();
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException("Error retrieving all cart products: " + e.getMessage());
         }
     }
 
@@ -111,7 +109,7 @@ public class CartFacadeREST {
             return ejb.findAllBoughtProducts();
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException("Error retrieving bought products: " + e.getMessage());
         }
     }
 
@@ -124,7 +122,7 @@ public class CartFacadeREST {
             return ejb.findAllNotBoughtProducts();
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException("Error retrieving not bought products: " + e.getMessage());
         }
     }
 
@@ -137,21 +135,21 @@ public class CartFacadeREST {
             return ejb.findByArtist(artistName);
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException("Error retrieving products by artist: " + e.getMessage());
         }
     }
 
     @GET
     @Path("betweenDates/{startDate}/{endDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Cart> findBetweenDate(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+    public List<Cart> findBetweenDate(@PathParam("startDate") String startDate,
+            @PathParam("endDate") String endDate) {
         try {
-            LOGGER.log(Level.INFO, "Finding products between dates: {0} and {1}");
-
+            LOGGER.log(Level.INFO, "Finding products between dates: {0} and {1}", new Object[]{startDate, endDate});
             return ejb.findBetweenDate(startDate, endDate);
         } catch (ReadException e) {
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException("Error retrieving products between dates: " + e.getMessage());
         }
     }
 }

@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import eus.tartanga.crud.ejb.AdministratorManagerLocal;
 import eus.tartanga.crud.entities.Administrator;
+import eus.tartanga.crud.entities.Product;
 import eus.tartanga.crud.exceptions.CreateException;
 import eus.tartanga.crud.exceptions.DeleteException;
 import eus.tartanga.crud.exceptions.ReadException;
@@ -20,6 +21,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.WebApplicationException;
 
 /**
  *
@@ -35,88 +38,96 @@ public class AdministratorFacadeREST {
 
     @POST
     @Consumes(MediaType.APPLICATION_XML)
-    public Response create(Administrator administrator){
+    public void create(Administrator administrator) {
         try {
-            LOGGER.log(Level.INFO, "Creating Administrator{0}", administrator.getEmail());
+            LOGGER.log(Level.INFO, "Creating Administrator: {0}", administrator.getEmail());
             ejb.create(administrator);
-            return Response.status(Response.Status.CREATED).entity(administrator).build();
         } catch (CreateException e) {
-            LOGGER.severe(e.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST).entity("Failed to create administrator: " + e.getMessage()).build();
+            LOGGER.log(Level.SEVERE, "Error creating administrator: {0}", e.getMessage());
+            throw new WebApplicationException("Error creating administrator", 400);
         }
     }
 
     @PUT
+    @Path("{email}")
     @Consumes(MediaType.APPLICATION_XML)
-    public Response update(Administrator administrator) {
+    public void update(Administrator administrator) {
         try {
             LOGGER.log(Level.INFO, "Updating Administrator: {0}", administrator.getEmail());
             ejb.update(administrator);
-            return Response.status(Response.Status.OK).entity(administrator).build();
         } catch (UpdateException e) {
-            LOGGER.severe("Error updating administrator: " + e.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST).entity("Failed to update administrator: " + e.getMessage()).build();
+            LOGGER.log(Level.SEVERE, "Error updating administrator: {0}", e.getMessage());
+            throw new WebApplicationException("Error updating administrator", 400);
         }
     }
+    
+   @DELETE
+@Path("{email}")
+public void remove(@PathParam("email") String email) {
+    try {
+        LOGGER.log(Level.INFO, "Attempting to delete Administrator: {0}", email);
+        Administrator admin = ejb.find(email);
+        
+        if (admin == null) {
+            LOGGER.log(Level.WARNING, "Administrator not found with email: {0}", email);
+            throw new WebApplicationException("Administrator not found", 404);
+        }else{
+        
+        // Confirmar que el administrador ha sido encontrado
+        LOGGER.log(Level.INFO, "Administrator {0} found, proceeding with deletion", email);
+        ejb.remove(admin);
+        // Confirmar eliminación
+        LOGGER.log(Level.INFO, "Administrator {0} deleted successfully", email);
+        }
+    } catch (DeleteException e) {
+        LOGGER.log(Level.SEVERE, "Error deleting administrator: {0}", e.getMessage());
+        throw new WebApplicationException("Error deleting administrator", 500);
+    } catch (ReadException e) {
+        LOGGER.log(Level.SEVERE, "Error retrieving administrator during deletion: {0}", e.getMessage());
+        throw new WebApplicationException("Administrator not found", 404);
+    }
+}
 
-    @DELETE
-    @Path("{email}")
-    public Response remove(@PathParam("email") String email) {
-        try {
-            LOGGER.log(Level.INFO, "Deleting Administrator: {0}", email);
-            Administrator admin = ejb.find(email);
-            if (admin == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Administrator not found").build();
-            }
-            ejb.remove(admin);
-            return Response.status(Response.Status.NO_CONTENT).build();
-        } catch (DeleteException e) {
-            LOGGER.severe("Error deleting administrator: " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to delete administrator: " + e.getMessage()).build();
-        } catch (ReadException ex) {
-            LOGGER.severe("Administrator not found during deletion: " + ex.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity("Administrator not found").build();
-        }
-    }
 
     @GET
     @Path("{email}")
     @Produces(MediaType.APPLICATION_XML)
-    public Response find(@PathParam("email") String email) {
+    public Administrator find(@PathParam("email") String email) {
         try {
+            LOGGER.log(Level.INFO, "Finding Administrator: {0}", email);
             Administrator admin = ejb.find(email);
             if (admin == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Administrator not found").build();
+                throw new WebApplicationException("Administrator not found", 404);
             }
-            return Response.status(Response.Status.OK).entity(admin).build();
-        } catch (ReadException ex) {
-            LOGGER.log(Level.SEVERE, "Error finding administrator: {0}", ex.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error finding administrator").build();
+            return admin;
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error finding administrator: {0}", e.getMessage());
+            throw new WebApplicationException("Error finding administrator", 500);
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public List<Administrator> findAll() throws ReadException {
+    public List<Administrator> findAll() {
         try {
-            LOGGER.log(Level.INFO, "Reading data for all administrator{0}");
+            LOGGER.log(Level.INFO, "Fetching all Administrators");
             return ejb.findAll();
-        } catch (ReadException ex) {
-            Logger.getLogger(AdministratorFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ReadException e) {
+            LOGGER.log(Level.SEVERE, "Error fetching administrators: {0}", e.getMessage());
+            throw new WebApplicationException("Error fetching administrators", 500);
         }
-        return ejb.findAll();
-
     }
 
     @GET
     @Path("signIn/{email}/{passwd}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Administrator signIn(@PathParam("email") String email, @PathParam("passwd") String passwd) throws ReadException {
+    public Administrator signIn(@PathParam("email") String email, @PathParam("passwd") String passwd) {
         try {
+            LOGGER.log(Level.INFO, "Signing in Administrator: {0}", email);
             return ejb.signIn(email, passwd);
         } catch (ReadException e) {
             LOGGER.log(Level.SEVERE, "Error during sign-in process: {0}", e.getMessage());
-            throw new ReadException("Sign-in failed: " + e.getMessage());
+            throw new WebApplicationException("Sign-in failed", 401);
         }
     }
 }
