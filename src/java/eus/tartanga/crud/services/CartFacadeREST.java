@@ -84,7 +84,7 @@ public class CartFacadeREST {
     @GET
     @Path("{email}/{productId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Cart findCart(@PathParam("email") String email, @PathParam("productId") Integer productId) {
+    public Cart findCart(@PathParam("email") String email, @PathParam("productId") Integer productId) throws ReadException {
 
         LOGGER.log(Level.INFO, "Finding cart with email: {0} and productId: {1}", new Object[]{email, productId});
         return ejb.findCart(email, productId);
