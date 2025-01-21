@@ -1,6 +1,5 @@
 package eus.tartanga.crud.ejb;
 
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 import eus.tartanga.crud.entities.Artist;
 import eus.tartanga.crud.exceptions.CreateException;
 import eus.tartanga.crud.exceptions.DeleteException;
@@ -64,10 +63,10 @@ public class EJBArtistManager implements ArtistManagerLocal {
             em.flush();
             logger.log(Level.INFO, "Artist updated successfully: {0}", artist);
         } catch (PersistenceException e) {
-            LOGGER.log(Level.SEVERE, "Error updating cart: " + e.getMessage(), e);
+            logger.log(Level.SEVERE, "Error updating cart: " + e.getMessage(), e);
             throw new UpdateException("Error while updating the cart: " + e.getMessage());
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unexpected error while updating the cart: {0}", e.getMessage());
+            logger.log(Level.SEVERE, "Unexpected error while updating the cart: {0}", e.getMessage());
             throw new UpdateException("Unexpected error while updating the cart: " + e.getMessage());
         }
     }
@@ -82,10 +81,11 @@ public class EJBArtistManager implements ArtistManagerLocal {
     @Override
     public void removeArtist(Artist artist) throws DeleteException {
         try {
-            em.remove(artist);
+            Artist manageArtist = em.contains(artist)? artist: em.merge(artist);
+            em.remove(manageArtist);
             logger.log(Level.INFO, "Artist removed successfully: {0}", artist);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error removing artist: " + artist, e);
+            logger.log(Level.SEVERE, "Error removing artist:{0} " +  e);
             throw new DeleteException("Error removing artist: " + e.getMessage());
         }
     }

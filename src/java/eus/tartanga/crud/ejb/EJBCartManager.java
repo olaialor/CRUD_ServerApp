@@ -80,7 +80,11 @@ public class EJBCartManager implements CartManagerLocal {
     @Override
     public void removeCart(Cart cart) throws DeleteException {
         try {
-            em.remove(em.merge(cart));
+            if (!em.contains(cart)) {
+                cart = em.merge(cart);
+            }
+            em.remove(cart);
+            em.flush();
             LOGGER.log(Level.INFO, "Cart removed: {0}", cart);
         } catch (PersistenceException e) {
             LOGGER.log(Level.SEVERE, "Error removing cart: " + e.getMessage(), e);
