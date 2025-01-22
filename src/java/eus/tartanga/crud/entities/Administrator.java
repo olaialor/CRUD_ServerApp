@@ -5,10 +5,7 @@
  */
 package eus.tartanga.crud.entities;
 
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -24,7 +21,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @NamedQueries({
-    @NamedQuery(name = "findAll", query = "SELECT c FROM Administrator c")
+    @NamedQuery(
+            name = "findAll", 
+            query = "SELECT c FROM Administrator c"
+    ),
+    
+     @NamedQuery(
+            name = "adminSignIn", 
+            query = "SELECT c FROM Administrator c WHERE c.email = :email AND c.passwd = :passwd"
+    )
 })
 
 @Entity

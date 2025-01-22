@@ -7,16 +7,17 @@ package eus.tartanga.crud.services;
 
 import eus.tartanga.crud.ejb.ArtistManagerLocal;
 import eus.tartanga.crud.entities.Artist;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -38,37 +39,39 @@ public class ArtistFacadeREST{
 
     @POST
     @Consumes(MediaType.APPLICATION_XML)
-    public void createArtist(Artist artist) {
+    public void createArtist(Artist artist) throws CreateException {
         try{
             LOGGER.log(Level.INFO,"Creating Artist{0}",artist.getArtistId());
             ejb.createArtist(artist);
-        }catch(Exception e){
+        }catch(CreateException e){
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new CreateException(e.getMessage());
         }
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
-    public void updateArtist(Artist artist) {
+    public void updateArtist(Artist artist) throws UpdateException {
         try{
             LOGGER.log(Level.INFO,"Updating Artist {0}",artist.getArtistId());
             ejb.updateArtist(artist);
-        }catch(Exception e){
+        }catch(UpdateException e){
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new UpdateException(e.getMessage());
         }
     }
 
     @DELETE
     @Path("{id}")
-    public void removeArtist(@PathParam("id")Integer id) {
+    public void removeArtist(@PathParam("id")Integer id) throws DeleteException, ReadException {
         try{
             LOGGER.log(Level.INFO,"Deleting Artist {0}",id);
             ejb.removeArtist(ejb.findArtist(id));
-        }catch(Exception e){
+        }catch(DeleteException e){
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new DeleteException(e.getMessage());
+        } catch (ReadException ex) {
+            Logger.getLogger(ArtistFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -76,24 +79,28 @@ public class ArtistFacadeREST{
    @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_XML)
-    public Artist findArtist(@PathParam("id") Integer id) {
+    public Artist findArtist(@PathParam("id") Integer id) throws ReadException {
         try{
             LOGGER.log(Level.INFO,"Reading data for artist {0}",id);
             return ejb.findArtist(id);
-        }catch(Exception e){
+        }catch(ReadException e){
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
     }
 
    @GET
     @Produces(MediaType.APPLICATION_XML)
-    public List<Artist> findAllArtist() {
+    public List<Artist> findAllArtist() throws ReadException {
        
+        try {
             LOGGER.log(Level.INFO,"Reading data for all artist {0}");
             return ejb.findAllArtist();
-        
-        
+        } catch (ReadException ex) {
+            Logger.getLogger(ArtistFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ejb.findAllArtist();
+
     }
     
      /**
@@ -104,12 +111,12 @@ public class ArtistFacadeREST{
     @GET
     @Path("search/{searchTerm}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Artist> searchByTerm(@PathParam("searchTerm") String searchTerm) {
+    public List<Artist> searchByTerm(@PathParam("searchTerm") String searchTerm) throws ReadException {
           try{
             return ejb.ArtistFindBySearchTerm(searchTerm);
-        }catch(Exception e){
+        }catch(ReadException e){
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
     }
     
@@ -122,12 +129,12 @@ public class ArtistFacadeREST{
     @GET
     @Path("betweenDates/{startDate}/{endDate}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Artist> ArtistFindBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+    public List<Artist> ArtistFindBetweenDates(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) throws ReadException {
           try{
             return ejb.ArtistFindBetweenDates(startDate,endDate);
-        }catch(Exception e){
+        }catch(ReadException e){
             LOGGER.severe(e.getMessage());
-            throw new InternalServerErrorException(e.getMessage());
+            throw new ReadException(e.getMessage());
         }
     }
 

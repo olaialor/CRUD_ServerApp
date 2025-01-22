@@ -6,7 +6,10 @@
 package eus.tartanga.crud.ejb;
 
 import eus.tartanga.crud.entities.Product;
-import java.util.Date;
+import eus.tartanga.crud.exceptions.CreateException;
+import eus.tartanga.crud.exceptions.DeleteException;
+import eus.tartanga.crud.exceptions.ReadException;
+import eus.tartanga.crud.exceptions.UpdateException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,12 +19,20 @@ import javax.ejb.Local;
  */
 @Local
 public interface ProductManagerLocal {
-    void createProduct(Product product);
-    void updateProduct(Product product);
-    void deleteProduct(Integer productId);
-    Product findProductById(Integer productId);
-    List<Product> findAllProducts();
-    List<Product> searchProductsByTerm(String searchTerm);
-    List<Product> findProductsInStock();
-    List<Product> findProductsBetweenDates(String startDate, String endDate);
+
+    public void createProduct(Product product) throws CreateException;
+
+    public void updateProduct(Product product) throws UpdateException;
+
+    public void deleteProduct(Integer productId) throws DeleteException;
+
+    public Product findProductById(Integer productId) throws ReadException;
+
+    public List<Product> findAllProducts() throws ReadException;
+
+    public List<Product> searchProductsByTerm(String searchTerm) throws ReadException;
+
+    public List<Product> findProductsInStock() throws ReadException;
+
+    public List<Product> findProductsBetweenDates(String startDate, String endDate) throws ReadException;
 }
