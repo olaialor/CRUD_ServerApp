@@ -1,6 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This package contains custom exception classes for the Fanetix application.
+ * The exceptions in this package are used to handle various error conditions
+ * that may arise during the execution of the system's business logic,
+ * ensuring proper error handling and providing meaningful feedback to users.
  */
 package eus.tartanga.crud.exceptions;

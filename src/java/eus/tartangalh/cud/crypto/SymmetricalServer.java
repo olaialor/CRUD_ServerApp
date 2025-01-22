@@ -16,7 +16,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 import javax.crypto.BadPaddingException;
-
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -28,47 +27,35 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SymmetricalServer {
 
-  
-
-/**
- * Criptografía Simétrica
- * 
- * Esta clase permite cifrar un texto y lo guarda en un fichero. La única forma 
- * de descifrar el texto es mediante una clave, que tanto el emisor como el 
- * receptor conocen.
- * 
- * PASOS: 
- * 1 Creacion de la clave, denominada derivada, porque se obtiene a partir de un password
- *         usando para ello la función PBKDF2  
- *         además añadimos un salt o semilla para hacerlo más random
- *         Hecho lo anterior usamos SecretKeyFactory para generar la clave simétrica
- *         y SecretKeySpec para "adaptarla" al algoritmo de cifrado: AES
- * 2 Empezamos el proceso de cifrado definiendo el algoritmoa usar: AES
- * 3 Como el AES cifra dividiendo el mensaje en bloques de 16 bytes definición del procedimiento de 
- * padding o relleno del ultimo bloque: PKCS5Padding
- * Para añadir más seguridad se utiliza el modo de operación CBC, o sea, XOR entre los bloques. Esto evita 
- * que se generen patrones, esto es, que dos bloques iguales al cifrar tengan el mismo aspecto 
- * 4 Cifrado. 
- * Añadimos un vector de inicialización para realizar el XOR del primer bloque con él
- */
-
+    /**
+     * Criptografía Simétrica
+     *
+     * Esta clase permite cifrar un texto y lo guarda en un fichero. La única
+     * forma de descifrar el texto es mediante una clave, que tanto el emisor
+     * como el receptor conocen.
+     *
+     * PASOS: 1 Creacion de la clave, denominada derivada, porque se obtiene a
+     * partir de un password usando para ello la función PBKDF2 además añadimos
+     * un salt o semilla para hacerlo más random Hecho lo anterior usamos
+     * SecretKeyFactory para generar la clave simétrica y SecretKeySpec para
+     * "adaptarla" al algoritmo de cifrado: AES 2 Empezamos el proceso de
+     * cifrado definiendo el algoritmoa usar: AES 3 Como el AES cifra dividiendo
+     * el mensaje en bloques de 16 bytes definición del procedimiento de padding
+     * o relleno del ultimo bloque: PKCS5Padding Para añadir más seguridad se
+     * utiliza el modo de operación CBC, o sea, XOR entre los bloques. Esto
+     * evita que se generen patrones, esto es, que dos bloques iguales al cifrar
+     * tengan el mismo aspecto 4 Cifrado. Añadimos un vector de inicialización
+     * para realizar el XOR del primer bloque con él
+     */
     // Fíjate que el String es de exactamente 16 bytes
-    private static byte[] salt = "esta es la salt!".getBytes(); 
+    private static byte[] salt = "esta es la salt!".getBytes();
 
-    
-    
-    
     //Va el metodo que envia el email.
-    
-    
-    
-    
-    
     /**
      * Cifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y lo
      * retorna
-     * 
-     * @param clave   La clave del usuario
+     *
+     * @param clave La clave del usuario
      * @param mensaje El mensaje a cifrar
      * @return Mensaje cifrado
      */
@@ -77,7 +64,6 @@ public class SymmetricalServer {
         KeySpec derivedKey = null;
         SecretKeyFactory secretKeyFactory = null;
         try {
-
             /* Usamos Password-based encryption (PBE) para obtener una clave derivada (derivedKey)
             * a partir del parámetro String clave.
             * 
@@ -97,44 +83,39 @@ public class SymmetricalServer {
             * brute-force attacks more difficult and resource-intensive for an attacker. 
             * The idea is to slow down the process of trying different passwords 
             * */
-            derivedKey = new PBEKeySpec(clave.toCharArray(), salt, 65536, 128); 
-	    // AES tiene los siguientes tmños de key: 128, 192, or 256 bits
-            
+            derivedKey = new PBEKeySpec(clave.toCharArray(), salt, 65536, 128);
+            // AES tiene los siguientes tmños de key: 128, 192, or 256 bits
+
             // SecretKeyFactory is used to obtain a secret key from the key specification using the PBKDF2 algorithm 
             secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-             
+
             byte[] derivedKeyPBK = secretKeyFactory.generateSecret(derivedKey).getEncoded();
-                     
+
             SecretKey derivedKeyPBK_AES = new SecretKeySpec(derivedKeyPBK, 0, derivedKeyPBK.length, "AES");
 
-          
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");	    
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, derivedKeyPBK_AES);
             byte[] encodedMessage = cipher.doFinal(mensaje.getBytes()); // Mensaje cifrado !!!
             byte[] iv = cipher.getIV(); // vector de inicializaci�n  
-             
+
             // Añadimos el vector de inicialización
             byte[] combined = concatArrays(iv, encodedMessage);
-
             fileWriter("c:\\trastero\\EjemploAES.dat", combined);
-
             ret = new String(encodedMessage);
-
         } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
-            
+
         }
         return ret;
     }
 
     /**
-     * Descifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y lo
-     * retorna
-     * 
+     * Descifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y
+     * lo retorna
+     *
      * @param clave La clave del usuario
      */
     private String descifrarTexto(String clave) {
         String ret = null;
-
         // Fichero leído
         byte[] fileContent = fileReader("c:\\trastero\\EjemploAES.dat");
         KeySpec keySpec = null;
@@ -145,7 +126,6 @@ public class SymmetricalServer {
             secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
             SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
-
             // Creamos un Cipher con el algoritmos que vamos a usar
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             IvParameterSpec ivParam = new IvParameterSpec(Arrays.copyOfRange(fileContent, 0, 16)); // La IV est� aqu�
@@ -153,14 +133,14 @@ public class SymmetricalServer {
             byte[] decodedMessage = cipher.doFinal(Arrays.copyOfRange(fileContent, 16, fileContent.length));
             ret = new String(decodedMessage);
         } catch (InvalidAlgorithmParameterException | InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
-            
+
         }
         return ret;
     }
 
     /**
      * Retorna una concatenaci�n de ambos arrays
-     * 
+     *
      * @param array1
      * @param array2
      * @return Concatenaci�n de ambos arrays
@@ -174,21 +154,21 @@ public class SymmetricalServer {
 
     /**
      * Escribe un fichero
-     * 
+     *
      * @param path Path del fichero
      * @param text Texto a escibir
      */
     private void fileWriter(String path, byte[] text) {
         try (FileOutputStream fos = new FileOutputStream(path)) {
-                fos.write(text);
+            fos.write(text);
         } catch (IOException e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     /**
      * Retorna el contenido de un fichero
-     * 
+     *
      * @param path Path del fichero
      * @return El texto del fichero
      */

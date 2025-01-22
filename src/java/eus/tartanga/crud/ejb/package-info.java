@@ -1,6 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This package contains the Enterprise JavaBeans (EJB) and the interfaces
+ * associated with the entities in the server application of the
+ * "crudchallenge" project.
+ *
+ * The EJBs provide the business logic required to manage CRUD operations
+ * on the system's entities, while the interfaces define the contracts
+ * for interacting with these entities.
  */
 package eus.tartanga.crud.ejb;

@@ -14,14 +14,12 @@ public class Hash {
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             byte[] hashBytes = md5.digest(text.getBytes());
-
             // Convert the byte array to a hexadecimal representation
             StringBuilder hexStringBuilder = new StringBuilder();
             for (byte b : hashBytes) {
                 String hex = String.format("%02X", b);
                 hexStringBuilder.append(hex);
             }
-
             return hexStringBuilder.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
