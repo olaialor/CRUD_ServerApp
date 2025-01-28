@@ -53,7 +53,7 @@ public interface CartManagerLocal {
      * products.
      *
      */
-    public Cart findCart(String email, Long productId) throws ReadException;
+    public Cart findCart(String email, Integer productId) throws ReadException;
 
     /**
      * Retrieves all products currently in the cart.

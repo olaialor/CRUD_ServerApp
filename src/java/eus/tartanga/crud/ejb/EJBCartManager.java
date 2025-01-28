@@ -104,7 +104,7 @@ public class EJBCartManager implements CartManagerLocal {
      * @throws ReadException if there is an error during the read process.
      */
     @Override
-    public Cart findCart(String email, Long productId) throws ReadException {
+    public Cart findCart(String email, Integer productId) throws ReadException {
         // Creates the composite ID
         CartId cartId = new CartId(productId, email);
         try {

@@ -100,7 +100,7 @@ public class Cart implements Serializable {
      *
      * @return the product in the cart
      */
-    @XmlTransient
+    //@XmlTransient
     public Product getProduct() {
         return product;
     }

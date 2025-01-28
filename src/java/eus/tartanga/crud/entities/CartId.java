@@ -12,7 +12,7 @@ public class CartId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long productId; // ID del producto
+    private Integer productId; // ID del producto
     private String email;   // Email del cliente
 
     /**
@@ -27,17 +27,17 @@ public class CartId implements Serializable {
      * @param productId el ID del producto
      * @param email el email del cliente
      */
-    public CartId(Long productId, String email) {
+    public CartId(Integer productId, String email) {
         this.productId = productId;
         this.email = email;
     }
 
     // Getters y setters
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 

@@ -72,7 +72,7 @@ public class CartFacadeREST {
     @PUT
     @Path("{email}/{productId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void updateCart(@PathParam("email") String email, @PathParam("productId") Long productId, Cart cart) {
+    public void updateCart(@PathParam("email") String email, @PathParam("productId") Integer productId, Cart cart) {
         try {
             CartId cartId = new CartId(productId, email);
             LOGGER.log(Level.INFO, "Updating cart with ID: {0}", cartId);
@@ -94,7 +94,7 @@ public class CartFacadeREST {
      */
     @DELETE
     @Path("{email}/{productId}")
-    public void removeCart(@PathParam("email") String email, @PathParam("productId") Long productId) {
+    public void removeCart(@PathParam("email") String email, @PathParam("productId") Integer productId) {
         CartId cartId = new CartId(productId, email);
         try {
             LOGGER.log(Level.INFO, "Deleting cart with ID: {0}", cartId);
@@ -117,7 +117,7 @@ public class CartFacadeREST {
     @GET
     @Path("{email}/{productId}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Cart findCart(@PathParam("email") String email, @PathParam("productId") Long productId) {
+    public Cart findCart(@PathParam("email") String email, @PathParam("productId") Integer productId) {
         try {
             LOGGER.log(Level.INFO, "Finding cart with email: {0} and productId: {1}", new Object[]{email, productId});
             return ejb.findCart(email, productId);
@@ -126,6 +126,7 @@ public class CartFacadeREST {
             throw new InternalServerErrorException("Error finding cart: " + e.getMessage());
         }
     }
+
     @GET
     @Path("byEmail/{email}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
