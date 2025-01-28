@@ -1,126 +1,74 @@
 package eus.tartanga.crud.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Embeddable;
 
 /**
- * Embeddable class representing the composite primary key for the Cart entity.
- * <p>
- * The CartId class is used to uniquely identify a cart entry by combining the
- * product ID and the client's email address as a composite key. This class is
- * embedded in the Cart entity and is responsible for creating a unique
- * identifier for each cart entry.
- * </p>
- *
- * @author Meylin
+ * Representa la clave primaria compuesta para la entidad Cart.
  */
 @Embeddable
 public class CartId implements Serializable {
 
-    private Integer productId;
-    private String email;
+    private static final long serialVersionUID = 1L;
+
+    private Long productId; // ID del producto
+    private String email;   // Email del cliente
 
     /**
-     * Default constructor for the CartId class.
+     * Constructor vacío requerido por JPA.
      */
     public CartId() {
-
     }
 
     /**
-     * Constructor for the CartId class with the specified product ID and email.
+     * Constructor completo.
      *
-     * @param productId the product ID to set
-     * @param email the email address of the client to set
+     * @param productId el ID del producto
+     * @param email el email del cliente
      */
-    public CartId(Integer productId, String email) {
+    public CartId(Long productId, String email) {
         this.productId = productId;
         this.email = email;
     }
 
-    /**
-     * Gets the product ID.
-     *
-     * @return the product ID
-     */
-    public Integer getProductId() {
+    // Getters y setters
+    public Long getProductId() {
         return productId;
     }
 
-    /**
-     * Sets the product ID.
-     *
-     * @param productId the product ID to set
-     */
-    public void setProductId(Integer productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    /**
-     * Gets the email address of the client.
-     *
-     * @return the email address
-     */
     public String getEmail() {
         return email;
     }
 
-    /**
-     * Sets the email address of the client.
-     *
-     * @param email the email address to set
-     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-     * Computes the hash code for this CartId object.
-     * <p>
-     * The hash code is generated based on the product ID.
-     * </p>
-     *
-     * @return the hash code for this CartId
-     */
+    // Implementación de equals y hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartId cartId = (CartId) o;
+        return Objects.equals(productId, cartId.productId) &&
+               Objects.equals(email, cartId.email);
+    }
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (productId != null ? productId.hashCode() : 0);
-        return hash;
+        return Objects.hash(productId, email);
     }
 
-    /**
-     * Compares this CartId object with another object for equality.
-     * <p>
-     * This comparison is based on the product ID. If the product ID of both
-     * CartId objects is the same, they are considered equal.
-     * </p>
-     *
-     * @param object the object to compare with
-     * @return true if the objects are equal, false otherwise
-     */
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof CartId)) {
-            return false;
-        }
-        CartId other = (CartId) object;
-        if ((this.productId == null && other.productId != null) || (this.productId != null && !this.productId.equals(other.productId))) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Returns a string representation of this CartId object.
-     * <p>
-     * The string representation includes the product ID.
-     * </p>
-     *
-     * @return a string representation of this CartId
-     */
     @Override
     public String toString() {
-        return "eus.tartanga.crud.entities.CartId[ id=" + productId + " ]";
+        return "CartId{" +
+                "productId=" + productId +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

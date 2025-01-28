@@ -53,7 +53,7 @@ public interface CartManagerLocal {
      * products.
      *
      */
-    public Cart findCart(String email, Integer productId) throws ReadException;
+    public Cart findCart(String email, Long productId) throws ReadException;
 
     /**
      * Retrieves all products currently in the cart.
@@ -102,4 +102,6 @@ public interface CartManagerLocal {
      * by date range.
      */
     public List<Cart> findBetweenDate(String startDate, String endDate) throws ReadException;
+    
+    public Cart findCartByEmail(String email) throws ReadException;
 }

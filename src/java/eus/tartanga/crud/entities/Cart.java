@@ -1,7 +1,10 @@
 package eus.tartanga.crud.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity class representing a Cart in the system.
@@ -40,7 +44,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Meylin
  */
-
 @NamedQueries({
     @NamedQuery(name = "findAllCartProducts", query = "SELECT c FROM Cart c")
     ,    
@@ -62,14 +65,16 @@ public class Cart implements Serializable {
     @EmbeddedId
     private CartId id;
     @MapsId("productId")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private Product product;
     @MapsId("email")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private FanetixClient client;
     private Integer quantity;
     private Boolean bought;
     @Temporal(TemporalType.DATE)
+    @JsonSerialize(as = Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date orderDate;
 
     /**
@@ -95,6 +100,7 @@ public class Cart implements Serializable {
      *
      * @return the product in the cart
      */
+    @XmlTransient
     public Product getProduct() {
         return product;
     }
@@ -113,6 +119,7 @@ public class Cart implements Serializable {
      *
      * @return the client in the cart
      */
+    @XmlTransient
     public FanetixClient getClient() {
         return client;
     }

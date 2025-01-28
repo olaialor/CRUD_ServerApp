@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -19,6 +21,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * Represents a product in the Fanetix system. This class stores details of a
@@ -64,7 +67,7 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer productId;
 
-    @OneToMany(cascade = ALL, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "product")
     private List<Cart> client;
 
     @NotNull

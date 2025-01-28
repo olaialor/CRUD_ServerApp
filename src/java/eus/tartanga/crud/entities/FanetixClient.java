@@ -1,12 +1,15 @@
 package eus.tartanga.crud.entities;
 
 import java.util.List;
+import javax.persistence.CascadeType;
 import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -41,7 +44,7 @@ public class FanetixClient extends FanetixUser {
     private Integer zip;
     private String city;
     private Integer mobile;
-    @OneToMany(cascade = ALL, mappedBy = "client")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "client")
     private List<Cart> products;
 
     /**

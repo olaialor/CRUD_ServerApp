@@ -104,12 +104,26 @@ public class EJBCartManager implements CartManagerLocal {
      * @throws ReadException if there is an error during the read process.
      */
     @Override
-    public Cart findCart(String email, Integer productId) throws ReadException {
+    public Cart findCart(String email, Long productId) throws ReadException {
         // Creates the composite ID
         CartId cartId = new CartId(productId, email);
         try {
             // Searches for the Cart entity with its composite primary key
             Cart cart = em.find(Cart.class, cartId);
+            LOGGER.log(Level.INFO, "Cart found: {0}", cart);
+            return cart;
+        } catch (PersistenceException e) {
+            LOGGER.log(Level.SEVERE, "Error while finding the cart: " + e.getMessage(), e);
+            throw new ReadException("Error while finding the cart: " + e.getMessage());
+        }
+    }
+    @Override
+    public Cart findCartByEmail(String email) throws ReadException {
+        // Creates the composite ID
+        
+        try {
+            // Searches for the Cart entity with its composite primary key
+            Cart cart = em.find(Cart.class, email);
             LOGGER.log(Level.INFO, "Cart found: {0}", cart);
             return cart;
         } catch (PersistenceException e) {
