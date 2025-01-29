@@ -1,8 +1,11 @@
 package eus.tartanga.crud.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -77,7 +80,7 @@ public class Concert implements Serializable {
     @NotNull(message = "concertName.required")
     private String concertName;
 
-    @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Artist> artistList;
 
     private String location;
@@ -85,6 +88,8 @@ public class Concert implements Serializable {
     private String city;
 
     @Temporal(TemporalType.DATE)
+    @JsonSerialize(as = Date.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date concertDate;
 
     @Temporal(TemporalType.TIME)

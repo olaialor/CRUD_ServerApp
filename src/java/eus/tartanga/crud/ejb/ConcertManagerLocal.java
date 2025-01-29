@@ -39,7 +39,7 @@ public interface ConcertManagerLocal {
      * @param concert The Concert entity to be removed.
      * @throws DeleteException If an error occurs while removing the concert.
      */
-    public void removeConcert(Concert concert) throws DeleteException;
+    public void removeConcert(Integer concertId) throws DeleteException;
 
     /**
      * Finds a specific concert by its ID.

@@ -75,9 +75,12 @@ public class EJBConcertManager implements ConcertManagerLocal {
      * @throws DeleteException if an error occurs while removing the concert
      */
     @Override
-    public void removeConcert(Concert concert) throws DeleteException {
+    public void removeConcert(Integer concertId) throws DeleteException {
         try {
-            em.remove(em.contains(concert) ? concert : em.merge(concert));
+            Concert concert = em.find(Concert.class, concertId);
+            if (concert != null) {
+                em.remove(em.contains(concert) ? concert : em.merge(concert));
+            }
             LOGGER.log(Level.INFO, "Concert removed: {0}", concert);
         } catch (PersistenceException e) {
             LOGGER.log(Level.SEVERE, "Persistence error removing concert: " + e.getMessage(), e);

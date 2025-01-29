@@ -88,7 +88,13 @@ public class ConcertFacadeREST {
     public void removeConcert(@PathParam("id") Integer id) {
         try {
             LOGGER.log(Level.INFO, "Deleting concert with ID: {0}", id);
-            ejb.removeConcert(ejb.findConcert(id));
+            Concert concert =ejb.findConcert(id);
+            if (concert != null) {
+                 ejb.removeConcert(id);
+            }else {
+                throw new DeleteException("Concert eith ID "+id+" not found");
+            }
+                
             LOGGER.log(Level.INFO, "Concert {0} deleted successfully", id);
         } catch (DeleteException e) {
             LOGGER.severe(e.getMessage());
