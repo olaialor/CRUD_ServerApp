@@ -1,5 +1,7 @@
 package eus.tartanga.crud.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.util.List;
 import static javax.persistence.CascadeType.ALL;
@@ -79,6 +81,8 @@ public class Product implements Serializable {
     private Artist artist;
     @NotNull
     @Temporal(TemporalType.DATE)
+    @JsonSerialize(as=Date.class)
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ssXXX")
     private Date releaseDate;
     @NotNull
     private float price;
