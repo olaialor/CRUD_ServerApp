@@ -1,4 +1,4 @@
 /*
  *This package conteins classes for password and hashing
  */
-package eus.tartangalh.cud.crypto;
+package eus.tartanga.crud.encrypt;

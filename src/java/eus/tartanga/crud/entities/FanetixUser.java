@@ -20,7 +20,7 @@ public class FanetixUser implements Serializable {
     @Id
     private String email;
     private String passwd;
-
+    
     /**
      * Gets the email of the user.
      *
