@@ -39,7 +39,17 @@ public class EJBProductManager implements ProductManagerLocal {
     @Override
     public void createProduct(Product product) throws CreateException {
         try {
-            em.persist(product);
+            //Before attempting to create product, verify that product´s artist
+            //is managed by persistence context
+            if(!em.contains(product.getArtist()))
+                //if not, merge artist
+                em.merge(product.getArtist());
+            //Then add new product to persistence context managed objects
+            if(!em.contains(product))
+                em.merge(product);
+            //Syncronize DB with objects status in the persistence context
+            em.flush();
+            //em.persist(product);
             LOGGER.log(Level.INFO, "Product created successfully: {0}", product);
         } catch (PersistenceException e) {
             LOGGER.log(Level.SEVERE, "Error creating product: {0}", product + e.getMessage());

@@ -69,7 +69,7 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer productId;
 
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "product")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "product")
     private List<Cart> client;
 
     @NotNull
@@ -114,7 +114,7 @@ public class Product implements Serializable {
      *
      * @return the list of clients.
      */
-    @XmlTransient
+    //@XmlTransient
     public List<Cart> getClient() {
         return client;
     }
