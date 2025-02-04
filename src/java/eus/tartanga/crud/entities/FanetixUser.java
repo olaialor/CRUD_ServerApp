@@ -1,8 +1,12 @@
 package eus.tartanga.crud.entities;
 
 import java.io.Serializable;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
 
 /**
  * This is a base class representing a user in the Fanetix system. It contains
@@ -13,7 +17,10 @@ import javax.persistence.MappedSuperclass;
  *
  * @author Meylin
  */
-@MappedSuperclass
+//@MappedSuperclass
+@Entity
+@Table(name = "fanetix_user", schema = "Fanetix")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class FanetixUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
