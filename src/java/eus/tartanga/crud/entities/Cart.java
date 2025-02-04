@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
@@ -64,11 +65,13 @@ public class Cart implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     private CartId id;
-    @MapsId("productId")
+    //@MapsId("productId")
     @ManyToOne
+    @JoinColumn(name="productId",updatable=false,insertable=false)
     private Product product;
-    @MapsId("email")
+    //@MapsId("email")
     @ManyToOne
+    @JoinColumn(name="email",updatable=false,insertable=false)
     private FanetixClient client;
     private Integer quantity;
     private Boolean bought;
@@ -100,7 +103,7 @@ public class Cart implements Serializable {
      *
      * @return the product in the cart
      */
-    //@XmlTransient
+    @XmlTransient
     public Product getProduct() {
         return product;
     }

@@ -44,7 +44,7 @@ public class FanetixClient extends FanetixUser {
     private Integer zip;
     private String city;
     private Integer mobile;
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "client")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "client")
     private List<Cart> products;
 
     /**
@@ -143,7 +143,7 @@ public class FanetixClient extends FanetixUser {
      *
      * @return the list of products in the cart.
      */
-    @XmlTransient
+    //@XmlTransient
     public List<Cart> getProducts() {
         return products;
     }
