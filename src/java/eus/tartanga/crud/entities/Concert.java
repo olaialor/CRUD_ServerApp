@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
@@ -80,7 +82,12 @@ public class Concert implements Serializable {
     @NotNull(message = "concertName.required")
     private String concertName;
 
-    @ManyToMany(mappedBy = "concertList", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable (
+            name = "artist_concert", schema = "Fanetix",
+            joinColumns = @JoinColumn(name = "concert_concertId", referencedColumnName = "concertId"),
+            inverseJoinColumns = @JoinColumn(name = "artist_artistId", referencedColumnName = "artistId")
+    )
     private List<Artist> artistList;
 
     private String location;

@@ -104,15 +104,6 @@ public class Artist implements Serializable {
     private String lastAlbum;
 
     /**
-     * A list of concerts associated with the artist.
-     */
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "artist_concert", schema = "Fanetix",
-            joinColumns = @JoinColumn(name = "artist_artistId", referencedColumnName = "artistId"),
-            inverseJoinColumns = @JoinColumn(name = "concert_concertId", referencedColumnName = "concertId"))
-    private List<Concert> concertList;
-
-    /**
      * A set of products associated with the artist.
      */
     @OneToMany
@@ -245,24 +236,6 @@ public class Artist implements Serializable {
         this.lastAlbum = lastAlbum;
     }
 
-    /**
-     * Returns the list of concerts associated with the artist.
-     *
-     * @return the concert list
-     */
-    @XmlTransient
-    public List<Concert> getConcertList() {
-        return concertList;
-    }
-
-    /**
-     * Sets the list of concerts associated with the artist.
-     *
-     * @param concertList the concert list to set
-     */
-    public void setConcertList(List<Concert> concertList) {
-        this.concertList = concertList;
-    }
 
     /**
      * Returns the hash code for the artist.
