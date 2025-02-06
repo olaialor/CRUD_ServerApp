@@ -44,7 +44,7 @@ public class ArtistFacadeREST {
      * process.
      */
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void createArtist(Artist artist) {
         try {
             LOGGER.log(Level.INFO, "Creating Artist{0}", artist.getArtistId());
@@ -64,7 +64,7 @@ public class ArtistFacadeREST {
      */
     @PUT
     @Path("{id}")
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void updateArtist(Artist artist) {
         try {
             LOGGER.log(Level.INFO, "Updating Artist {0}", artist.getArtistId());
@@ -109,7 +109,7 @@ public class ArtistFacadeREST {
      */
     @GET
     @Path("{id}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Artist findArtist(@PathParam("id") Integer id) {
         try {
             LOGGER.log(Level.INFO, "Reading data for Artist {0}", id);
@@ -132,7 +132,7 @@ public class ArtistFacadeREST {
      * process.
      */
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Artist> findAllArtist() {
 
         try {
