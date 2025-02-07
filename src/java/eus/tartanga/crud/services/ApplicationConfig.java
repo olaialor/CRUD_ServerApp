@@ -5,20 +5,28 @@ import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
-@ApplicationPath("/api") // Define el prefijo de la URL base para todos los recursos
+@ApplicationPath("/api") // Defines the base URL prefix for all resources
 public class ApplicationConfig extends Application {
 
+    /**
+     * Returns a set of classes that are part of the RESTful resources.
+     * This method is used to maintain a centralized registry of resources.
+     *
+     * @return a set of classes to be included in the application
+     */
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new HashSet<>();
-        // Registrar los recursos aquí
+        // Register resources here
         addRestResourceClasses(resources);
         return resources;
     }
 
     /**
-     * Registra todas las clases de recursos RESTful. Este método es útil para
-     * mantener un registro centralizado de recursos.
+     * Registers all the RESTful resource classes. This method is useful for
+     * keeping a centralized registry of the resources.
+     *
+     * @param resources a set of classes to be registered
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(eus.tartanga.crud.services.AdministratorFacadeREST.class);

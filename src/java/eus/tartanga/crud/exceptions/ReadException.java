@@ -1,26 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eus.tartanga.crud.exceptions;
 
 /**
- *
+ * Exception thrown when there is an error reading data.
+ * This class extends the Exception class to provide more specific exception handling
+ * for read-related operations.
+ * 
  * @author Elbire
  */
 public class ReadException extends Exception {
 
     /**
-     * Creates a new instance of <code>ReadException</code> without detail
-     * message.
+     * Creates a new instance of ReadException without a detail message.
      */
     public ReadException() {
     }
 
     /**
-     * Constructs an instance of <code>ReadException</code> with the specified
-     * detail message.
+     * Constructs a new instance of ReadException with the specified detail message.
      *
      * @param msg the detail message.
      */

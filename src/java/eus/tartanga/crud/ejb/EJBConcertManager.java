@@ -71,7 +71,7 @@ public class EJBConcertManager implements ConcertManagerLocal {
     /**
      * Removes a concert from the database.
      *
-     * @param concert the concert to be removed
+     * @param concertId the concert to be removed
      * @throws DeleteException if an error occurs while removing the concert
      */
     @Override

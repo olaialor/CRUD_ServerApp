@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eus.tartanga.crud.encrypt;
 
 import java.io.File;
@@ -26,18 +21,24 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * This class provides methods for symmetric encryption and decryption using AES
+ * encryption in CBC mode. It also includes functionality to send emails using
+ * decrypted credentials.
+ */
 public class SymmetricalServer {
 
     private static byte[] salt = "esta es la salt!".getBytes();
     private static Logger logger = Logger.getLogger(SymmetricalServer.class.getName());
 
     /**
-     * Descifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y
-     * lo retorna.
+     * Decrypts a text using AES, CBC mode, and PKCS5Padding (symmetric) and
+     * returns the decrypted text.
      *
-     * @param key La clave del usuario para generar la clave secreta.
-     * @return El texto descifrado.
-     * @throws Exception Si ocurre un error durante el proceso de descifrado.
+     * @param key The user key to generate the secret key.
+     * @param fileContent The encrypted file content as a byte array.
+     * @return The decrypted text.
+     * @throws Exception If an error occurs during the decryption process.
      */
     public String decryptData(byte[] key, byte[] fileContent) throws Exception {
         String ret = null;
@@ -63,11 +64,11 @@ public class SymmetricalServer {
     }
 
     /**
-     * Lee el contenido de un archivo y lo retorna como un arreglo de bytes.
+     * Reads the content of a file and returns it as a byte array.
      *
-     * @param path La ruta del archivo.
-     * @return El contenido del archivo como un arreglo de bytes.
-     * @throws IOException Si ocurre un error durante la lectura del archivo.
+     * @param path The file path.
+     * @return The content of the file as a byte array.
+     * @throws IOException If an error occurs while reading the file.
      */
     private byte[] fileReader(String path) throws IOException {
         File file = new File(path);
@@ -75,6 +76,13 @@ public class SymmetricalServer {
         return Files.readAllBytes(file.toPath());
     }
 
+    /**
+     * Retrieves decrypted credentials from an encrypted file.
+     *
+     * @param key The decryption key.
+     * @param filePath The path to the encrypted credentials file.
+     * @return An array containing the decrypted email and password.
+     */
     public String[] getDecryptedCredentials(byte[] key, String filePath) {
         try {
             // Leemos el archivo cifrado
@@ -95,6 +103,15 @@ public class SymmetricalServer {
         }
     }
 
+    /**
+     * Sends an email using the decrypted credentials.
+     *
+     * @param clientEmail The recipient email address.
+     * @param key The decryption key.
+     * @param credentialsPath The path to the encrypted credentials file.
+     * @param messageType True if the email is for a changed password, false if
+     * generating a new password.
+     */
     public void sendEmail(String clientEmail, byte[] key, String credentialsPath, boolean messageType) {
         final String HOST = "localhost";
         final String TLS_PORT = "25";

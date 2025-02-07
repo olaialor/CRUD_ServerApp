@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eus.tartanga.crud.encrypt;
 
 import eus.tartanga.crud.exceptions.EncryptException;
@@ -14,8 +9,19 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 
+/**
+ * This class provides functionalities for asymmetric encryption and decryption,
+ * as well as text hashing using the MD5 algorithm.
+ */
 public class AsymmetricalServer {
 
+    /**
+     * Decrypts encrypted data using an RSA private key.
+     *
+     * @param encryptedData The encrypted data as a byte array.
+     * @return The original decrypted password as a string.
+     * @throws EncryptException If an error occurs during decryption.
+     */
     public static String decryptData(byte[] encryptedData) throws EncryptException {
         byte[] decryptedData;
         String passwordReceived = null;
@@ -58,12 +64,14 @@ public class AsymmetricalServer {
         }
         return passwordReceived;
     }
-
+    
     /**
-     * Hashes the input text using the MD5 algorithm.
+     * Generates an MD5 hash of a given text.
      *
      * @param text The text to be hashed.
-     * @return The hexadecimal representation of the hashed text.
+     * @return The hexadecimal representation of the generated hash.
+     * @throws EncryptException If an error occurs while generating the hash.
+     *rows EncryptException Si ocurre un error al generar el hash.
      */
     public static String hashText(String text) throws EncryptException {
         try {

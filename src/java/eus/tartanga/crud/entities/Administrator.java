@@ -1,14 +1,3 @@
-/**
- * Entity class representing an administrator in the system.
- * Extends FanetixUser to include additional attributes specific to administrators.
- *
- * <p>
- * This class is annotated with JPA and JAXB annotations to allow persistence
- * and XML binding.
- * </p>
- *
- * @author Meylin and Irati
- */
 package eus.tartanga.crud.entities;
 
 import java.util.Date;
@@ -21,6 +10,17 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Entity class representing an administrator in the system. Extends FanetixUser
+ * to include additional attributes specific to administrators.
+ *
+ * <p>
+ * This class is annotated with JPA and JAXB annotations to allow persistence
+ * and XML binding.
+ * </p>
+ *
+ * @author Meylin and Irati
+ */
 @NamedQueries({
     /**
      * Query to retrieve all administrators from the database.
